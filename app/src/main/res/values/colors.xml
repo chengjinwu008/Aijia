@@ -7,4 +7,5 @@
     <color name="border">#eaeaea</color>
     <color name="common_background">#f6f6f6</color>
     <color name="pure_white">#fff</color>
+    <color name="text_color">#666</color>
 </resources>
