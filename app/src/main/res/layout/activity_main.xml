@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_background"
+    tools:context="com.cjq.aijia.MainActivity">
+
+    <com.cjq.aijia.view.BottomBar
+        android:orientation="horizontal"
+        android:id="@+id/main_bottom_bar"
+        android:background="#fff"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"/>
+    <View
+        android:id="@+id/main_bottom_border"
+        android:background="@color/border"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@+id/main_bottom_bar"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_content"
+        android:layout_above="@id/main_bottom_border"
+        />
+</RelativeLayout>
