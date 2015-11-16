@@ -7,9 +7,9 @@
     <RelativeLayout
         android:id="@+id/nav1"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="@dimen/nav_bar"
         android:background="@color/theme_color"
-        android:padding="5dp">
+        android:padding="@dimen/nav_padding">
 
         <TextView
             android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
             android:layout_centerInParent="true"
             android:text="我的"
             android:textColor="@color/pure_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/nav_text_size" />
 
         <View
             android:layout_width="25dp"

@@ -14,14 +14,10 @@ import butterknife.ButterKnife;
 
 public class UserCenterFragment extends Fragment {
 
-    private static UserCenterFragment INSTANCE;
+    private static Fragment INSTANCE;
 
-    public UserCenterFragment(){
-
-    }
-
-    public static UserCenterFragment getInstance(){
-        if(INSTANCE ==null)
+    public static Fragment getInstance() {
+        if (INSTANCE == null)
             INSTANCE = new UserCenterFragment();
         return INSTANCE;
     }

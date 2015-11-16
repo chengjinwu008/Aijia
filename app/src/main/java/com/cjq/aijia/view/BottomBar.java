@@ -24,6 +24,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
     private int buttonOn = 0;
     private OnButtonCheckedListener checkedListener;
 
+    public int getButtonActivited() {
+        return buttonOn;
+    }
+
     public OnButtonCheckedListener getCheckedListener() {
         return checkedListener;
     }

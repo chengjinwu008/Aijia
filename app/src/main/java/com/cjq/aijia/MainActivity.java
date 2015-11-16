@@ -1,6 +1,7 @@
 package com.cjq.aijia;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,10 +9,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 
 import com.cjq.aijia.entity.BottomButton;
+import com.cjq.aijia.entity.EventMainRefresh;
+import com.cjq.aijia.fragments.LoginFragment;
+import com.cjq.aijia.fragments.NoNetworkFragment;
 import com.cjq.aijia.fragments.UserCenterFragment;
 import com.cjq.aijia.fragments.WebViewFragment;
 import com.cjq.aijia.service.CheckService;
+import com.cjq.aijia.util.SaveTool;
+import com.cjq.aijia.util.WebUtil;
 import com.cjq.aijia.view.BottomBar;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,9 +31,10 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     @InjectView(R.id.main_bottom_bar)
     BottomBar bottomBar;
     private Intent intent;
-    private Fragment uc_fragment;
+
+    private Map<String, Fragment> fragments = new HashMap<>();
+
     private FragmentManager manager;
-    private Fragment web_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +50,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
         intent = new Intent(this, CheckService.class);
 
-        if(savedInstanceState==null)
-        {
+        if (savedInstanceState == null) {
             Bmob.initialize(this, "6e5ad2c79bb81e156aec8a5c38a09f05");
             startService(intent);
         }
@@ -48,15 +58,23 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.gouwuche_dianji, R.drawable.gouwuche_weidianji, R.color.pure_white, R.color.pure_white, null));
-        bottomBar.addButton(new BottomButton(R.drawable.wode_dianji,R.drawable.wode_weidianji,R.color.pure_white,R.color.pure_white,null));
+        bottomBar.addButton(new BottomButton(R.drawable.wode_dianji, R.drawable.wode_weidianji, R.color.pure_white, R.color.pure_white, null));
 
         bottomBar.setCheckedListener(this);
+        manager = getSupportFragmentManager();
 
-        uc_fragment = UserCenterFragment.getInstance();
-        web_fragment = WebViewFragment.getInstance();
-        manager  = getSupportFragmentManager();
+        fragments.put("web", WebViewFragment.getInstance());
+        fragments.put("uc", UserCenterFragment.getInstance());
+        fragments.put("login", LoginFragment.getInstance());
+        fragments.put("no_net", NoNetworkFragment.getInstance());
+//        manager.beginTransaction().add(R.id.main_content, fragments.get("web")).commit();
 
-        manager.beginTransaction().add(R.id.main_content,web_fragment).commit();
+        if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
+            changeFragment("web");
+            dealWebView(0);
+        } else {
+            changeFragment("no_net");
+        }
     }
 
     @Override
@@ -67,34 +85,51 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     @Override
     public void onButtonCheckedNoChange(int No) {
         //处理不同的点击
-        switch (No){
+        switch (No) {
             case 3:
                 //跳转个人中心
-                FragmentTransaction transaction = manager.beginTransaction();
-                if(!uc_fragment.isAdded()) {
-                    transaction.add(R.id.main_content,uc_fragment);
+
+                if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
+                    try {
+                        SaveTool.getUserId(this);
+                        changeFragment("uc");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        changeFragment("login");
+                    }
+                } else {
+                    changeFragment("no_net");
                 }
-
-                if(web_fragment.isAdded() && !web_fragment.isHidden())
-                    transaction.hide(web_fragment);
-
-                transaction.show(uc_fragment).commit();
-
                 break;
             default:
-                FragmentTransaction trans = manager.beginTransaction();
-                if(!web_fragment.isAdded()) {
-                    trans.add(R.id.main_content,web_fragment);
+                if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
+                    changeFragment("web");
+                    dealWebView(No);
+                } else {
+                    changeFragment("no_net");
                 }
-
-                if(uc_fragment.isAdded() && !uc_fragment.isHidden())
-                    trans.hide(uc_fragment);
-
-                trans.show(web_fragment).commit();
-
-                dealWebView(No);
                 break;
         }
+    }
+
+    private void changeFragment(String key) {
+        FragmentTransaction transaction = manager.beginTransaction();
+        if (!fragments.get(key).isAdded()) {
+            transaction.add(R.id.main_content, fragments.get(key));
+        }
+
+        Set<String> keys = fragments.keySet();
+        for (String s : keys) {
+            if (!key.equals(s)) {
+                Fragment temp = fragments.get(s);
+                if (temp.isAdded() && !temp.isHidden())
+                    transaction.hide(temp);
+            }
+        }
+        if (fragments.get(key).isHidden())
+            transaction.show(fragments.get(key));
+
+        transaction.commit();
     }
 
     //对webview分类处理
@@ -104,7 +139,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
             return true;
         }
@@ -115,5 +150,9 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     protected void onDestroy() {
         stopService(intent);
         super.onDestroy();
+    }
+
+    public void onEventMainThread(EventMainRefresh e){
+        onButtonCheckedNoChange(bottomBar.getButtonActivited());
     }
 }

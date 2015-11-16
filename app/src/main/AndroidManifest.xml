@@ -12,11 +12,11 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,12 +30,23 @@
             android:enabled="true"
             android:exported="true" />
 
-        <!--orm配置-->
-        <meta-data android:name="DATABASE" android:value="aijia.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.cjq.aijia.domain" />
+        <!-- orm配置 -->
+        <meta-data
+            android:name="DATABASE"
+            android:value="aijia.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.cjq.aijia.domain" />
 
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.SetPasswordActivity" />
+        <activity android:name=".activity.FindPasswordActivity"></activity>
     </application>
 
 </manifest>
