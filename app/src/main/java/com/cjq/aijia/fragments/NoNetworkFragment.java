@@ -45,12 +45,12 @@ public class NoNetworkFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        EventBus.getDefault().post(new EventMainRefresh());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 refreshLayout.setRefreshing(false);
+                EventBus.getDefault().post(new EventMainRefresh());
             }
-        }, 1000);
+        }, 500);
     }
 }

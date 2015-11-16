@@ -154,5 +154,6 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     public void onEventMainThread(EventMainRefresh e){
         onButtonCheckedNoChange(bottomBar.getButtonActivited());
+
     }
 }
