@@ -10,6 +10,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.marshalchen.common.commonUtils.urlUtils.HttpUtilsAsync;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,12 +52,19 @@ public class WebUtil {
         });
     }
 
-    public static void requestShotMsg(Context context,String s,final Runnable dealAfterSuccess) {
+    public static void requestShotMsg(Context context,String s,final Runnable dealAfterSuccess) throws JSONException {
         if(!checkMobile(s)){
             ToastUtil.showToast(context,"请输入正确的手机号");
         }else{
             RequestParams params = new RequestParams();
-            params.put("mobile",s);
+
+            JSONObject paramObj=new JSONObject();
+            JSONObject dataObj=new JSONObject();
+            dataObj.put("phoneNumber",s);
+            paramObj.put("code","0001");
+            paramObj.put("data",dataObj);
+            params.put("opjson",paramObj.toString());
+
             HttpUtilsAsync.post(CommonData.SHORTMSG_URL,params, new AsyncHttpResponseHandler() {
 
                 @Override
@@ -66,6 +76,7 @@ public class WebUtil {
                 public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                     // 请求登录成功返回数据
                     dealAfterSuccess.run();
+                    System.out.println(new String(response));
                 }
 
                 @Override
@@ -82,7 +93,7 @@ public class WebUtil {
     }
 
     private static boolean checkMobile(String s) {
-        return !("".equals(s) || !s.matches("/^1[3|4|5|8][0-9]\\d{4,8}$/"));
+        return !("".equals(s) || !s.matches("^1[3|4|5|8][0-9]\\d{4,8}$"));
     }
 
     public static boolean checkNetWork(ConnectivityManager manager){

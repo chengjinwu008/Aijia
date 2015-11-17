@@ -11,6 +11,8 @@ import com.cjq.aijia.R;
 import com.cjq.aijia.util.TimerRunnable;
 import com.cjq.aijia.util.WebUtil;
 
+import org.json.JSONException;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -55,7 +57,11 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.find_password_request_verify:
-                WebUtil.requestShotMsg(this, mobile.getText().toString(),new TimerRunnable(requestVerify,threadFlag,handler));
+                try {
+                    WebUtil.requestShotMsg(this, mobile.getText().toString(),new TimerRunnable(requestVerify,threadFlag,handler));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.find_password_next_step:
                 // TODO: 2015/11/16 验证规则

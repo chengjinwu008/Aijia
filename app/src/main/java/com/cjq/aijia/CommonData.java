@@ -10,5 +10,5 @@ public class CommonData {
     public static String INDEX_URL = MAIN_URL+"/app/index2.html";
 
     public static String LOGIN_URL = MAIN_URL+"";
-    public static String SHORTMSG_URL = MAIN_URL+"";
+    public static String SHORTMSG_URL = MAIN_URL+"/service/app.php";
 }

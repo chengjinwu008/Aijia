@@ -17,6 +17,8 @@ import com.cjq.aijia.R;
 import com.cjq.aijia.util.TimerRunnable;
 import com.cjq.aijia.util.WebUtil;
 
+import org.json.JSONException;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -74,7 +76,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.register_request_verify:
-                WebUtil.requestShotMsg(this, mobile.getText().toString(), new TimerRunnable(requestVerify, threadFlag, handler));
+                try {
+                    WebUtil.requestShotMsg(this, mobile.getText().toString(), new TimerRunnable(requestVerify, threadFlag, handler));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.register_next_step:
                 // TODO: 2015/11/16 验证成功是否需要在线验证
