@@ -1,16 +1,30 @@
 package com.cjq.aijia.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.cjq.aijia.R;
+import com.cjq.aijia.entity.EventLogin;
+import com.cjq.aijia.entity.EventMainRefresh;
+import com.cjq.aijia.util.ToastUtil;
+import com.cjq.aijia.util.Validator;
+import com.cjq.aijia.util.WebUtil;
+import com.ypy.eventbus.EventBus;
+
+import org.json.JSONException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
+public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+
+    public final static String FLAG_REGISTER = "register";
+    public final static String FLAG_RESET = "reset";
+    public final static String FLAG_FIND = "find";
 
     @InjectView(R.id.set_password_new)
     EditText passwordNew;
@@ -20,6 +34,10 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
     View close;
     @InjectView(R.id.set_password_done)
     View done;
+    private String userName;
+    private String mobile;
+    private String verify;
+    private String flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +47,20 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         ButterKnife.inject(this);
 
         close.setOnClickListener(this);
+        Intent intent = getIntent();
+
+        userName = intent.getStringExtra("userName");
+        mobile = intent.getStringExtra("mobile");
+        verify = intent.getStringExtra("verify");
+        flag = intent.getStringExtra("flag");
+
+        if (flag == null || "".equals(flag)) {
+            Log.e("SetPasswordActivity","要启动改活动必须传入相应的FLAG");
+            finish();
+        }
+
+        passwordNew.setOnFocusChangeListener(this);
+        passwordConfirm.setOnFocusChangeListener(this);
     }
 
     @Override
@@ -39,8 +71,59 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.set_password_done:
-                // TODO: 2015/11/16 提交修改的密码
+
+                switch (flag){
+                    case FLAG_REGISTER:
+
+                        try {
+                            WebUtil.requestRegister(this, userName, mobile, verify, passwordNew.getText().toString(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
+                    case FLAG_FIND:
+
+                        try {
+                            WebUtil.requestFindPassword(this, mobile, verify, passwordNew.getText().toString(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtil.showToast(SetPasswordActivity.this,"密码已经找回并设置到新的密码，请重新登录");
+                                    finish();
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
+                }
+
                 break;
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(!hasFocus){
+            String pn =  passwordNew.getText().toString();
+            String pc =  passwordConfirm.getText().toString();
+            if(Validator.checkPassword(pn) && pn.equals(pc)){
+                if(!done.isEnabled()){
+                    done.setBackgroundResource(R.drawable.button1);
+                    done.setEnabled(true);
+                }
+            }else{
+                if(done.isEnabled()){
+                    done.setBackgroundResource(R.drawable.button3);
+                    done.setEnabled(false);
+                }
+            }
         }
     }
 }

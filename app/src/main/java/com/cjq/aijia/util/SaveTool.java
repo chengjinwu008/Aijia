@@ -35,7 +35,7 @@ public class SaveTool {
 
     public static String getUserId(Context context) throws Exception {
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-        String res = preferences.getString("user_id","");
+        String res = preferences.getString("userId","");
         if(!"".equals(res))
             return res;
         throw new Exception("没有登录");

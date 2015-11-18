@@ -1,9 +1,9 @@
 package com.cjq.aijia.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cjq.aijia.R;
+import com.cjq.aijia.util.FlashAnimationUtil;
 import com.cjq.aijia.util.TimerRunnable;
+import com.cjq.aijia.util.Validator;
 import com.cjq.aijia.util.WebUtil;
 
 import org.json.JSONException;
@@ -38,6 +40,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     View nextStep;
     @InjectView(R.id.register_close)
     View close;
+    @InjectView(R.id.register_divider_one)
+    View dividerOne;
+    @InjectView(R.id.register_divider_two)
+    View dividerTwo;
+    @InjectView(R.id.register_divider_three)
+    View dividerThree;
+
     Handler handler = new Handler();
 
     boolean threadFlag = true;
@@ -47,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onDestroy() {
-
+//        FlashAnimationUtil.endAll();
         threadFlag = false;
         super.onDestroy();
     }
@@ -70,6 +79,45 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         userName.setOnFocusChangeListener(this);
         mobile.setOnFocusChangeListener(this);
         verify.setOnFocusChangeListener(this);
+
+        new Thread() {
+            @Override
+            public void run() {
+                while (threadFlag) {
+                    String userNameText = userName.getText().toString();
+                    String mobileText = mobile.getText().toString();
+                    String verifyText = verify.getText().toString();
+                    if (Validator.checkName(userNameText)&& Validator.checkMobile(mobileText) && Validator.checkVerify(verifyText) && registerAg.isChecked()) {
+                        if (!nextStep.isEnabled()) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nextStep.setEnabled(true);
+                                    nextStep.setBackgroundResource(R.drawable.button1);
+                                }
+                            });
+                        }
+                    } else {
+                        if (nextStep.isEnabled()) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nextStep.setEnabled(false);
+                                    nextStep.setBackgroundResource(R.drawable.button3);
+                                }
+                            });
+                        }
+                    }
+
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                super.run();
+            }
+        }.start();
     }
 
     @Override
@@ -83,7 +131,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.register_next_step:
-                // TODO: 2015/11/16 验证成功是否需要在线验证
+                try {
+                    WebUtil.checkInfo(this, userName.getText().toString(), mobile.getText().toString(), verify.getText().toString(), new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(RegisterActivity.this,SetPasswordActivity.class);
+                            intent.putExtra("userName",userName.getText().toString());
+                            intent.putExtra("mobile",mobile.getText().toString());
+                            intent.putExtra("verify", verify.getText().toString());
+                            intent.putExtra("flag",SetPasswordActivity.FLAG_REGISTER);
+//                            intent.putExtra("userName",userName.getText().toString());
+
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.register_close:
                 finish();
@@ -93,38 +158,45 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            //失去焦点判断3个输入框的状态
-            checkInputStatus();
+        switch (v.getId()) {
+            case R.id.register_user_name:
+                if (!hasFocus) {
+                    //验证
+                    String userNameText = userName.getText().toString();
+                    if (Validator.checkName(userNameText)) {
+                        FlashAnimationUtil.changeColorSmooth(dividerOne, getResources().getColor(R.color.right));
+                    } else {
+                        FlashAnimationUtil.changeColorSmooth(dividerOne, getResources().getColor(R.color.err));
+                    }
+                }else{
+                    FlashAnimationUtil.changeColorSmooth(dividerOne, getResources().getColor(R.color.text_hint));
+                }
+                break;
+            case R.id.register_mobile:
+                if (!hasFocus) {
+                    String mobileText = mobile.getText().toString();
+                    if (Validator.checkMobile(mobileText)) {
+                        FlashAnimationUtil.changeColorSmooth(dividerTwo, getResources().getColor(R.color.right));
+                    } else {
+                        FlashAnimationUtil.changeColorSmooth(dividerTwo, getResources().getColor(R.color.err));
+                    }
+                }else{
+                    FlashAnimationUtil.changeColorSmooth(dividerTwo, getResources().getColor(R.color.text_hint));
+                }
+                break;
+            case R.id.register_verify:
+                if (!hasFocus) {
+                    String verifyText = verify.getText().toString();
+                    if (Validator.checkVerify(verifyText)) {
+                        FlashAnimationUtil.changeColorSmooth(dividerThree, getResources().getColor(R.color.right));
+                    } else {
+                        FlashAnimationUtil.changeColorSmooth(dividerThree, getResources().getColor(R.color.err));
+                    }
+                }else{
+                    FlashAnimationUtil.changeColorSmooth(dividerThree, getResources().getColor(R.color.text_hint));
+                }
+                break;
         }
     }
 
-    private void checkInputStatus() {
-        String username = userName.getText().toString();
-        String mob = mobile.getText().toString();
-        String ver = verify.getText().toString();
-
-        if (check(username, mob, ver)) {
-            nextStep.setBackgroundDrawable(getResources().getDrawable(R.drawable.button1));
-            nextStep.setEnabled(true);
-        } else {
-            nextStep.setBackgroundDrawable(getResources().getDrawable(R.drawable.button3));
-            nextStep.setEnabled(false);
-        }
-    }
-
-    //验证规则
-    private boolean check(String username, String mob, String ver) {
-        if ("".equals(username)) {
-            return false;
-        }
-        if ("".equals(mob)) {
-            return false;
-        }
-        if ("".equals(ver)) {
-            return false;
-        }
-
-        return true;
-    }
 }

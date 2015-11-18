@@ -55,7 +55,7 @@
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="请输入用户名"
+                    android:hint="3-15字符，不能纯数字，首位不能为_"
                     android:paddingBottom="11dp"
                     android:paddingLeft="0dp"
                     android:paddingTop="25dp"
@@ -64,8 +64,9 @@
                     android:textSize="14sp" />
 
                 <View
+                    android:id="@+id/register_divider_one"
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="2px"
                     android:background="@color/text_hint" />
 
 
@@ -91,8 +92,9 @@
                     android:textSize="14sp" />
 
                 <View
+                    android:id="@+id/register_divider_two"
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="2px"
                     android:background="@color/text_hint" />
 
                 <EditText
@@ -109,15 +111,18 @@
                     android:textSize="14sp" />
 
                 <View
+                    android:id="@+id/register_divider_three"
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="2px"
                     android:background="@color/text_hint" />
 
                 <CheckBox
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:id="@+id/register_ag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="25dp"
                     android:button="@drawable/check_box"
                     android:checked="false"
                     android:paddingLeft="10dp"
@@ -128,7 +133,7 @@
                     android:id="@+id/register_request_verify"
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="23dp"
                     android:background="@drawable/button2"
                     android:gravity="center"
                     android:text="发送验证码"

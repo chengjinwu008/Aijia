@@ -8,7 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 
+import com.cjq.aijia.activity.LogoActivity;
 import com.cjq.aijia.entity.BottomButton;
+import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.fragments.LoginFragment;
 import com.cjq.aijia.fragments.NoNetworkFragment;
@@ -39,6 +41,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivity(new Intent(this, LogoActivity.class));
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            //透明状态栏
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -83,7 +86,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     @Override
-    public void onButtonCheckedNoChange(int No) {
+    public void onButtonCheckedChanged(int No) {
         //处理不同的点击
         switch (No) {
             case 3:
@@ -152,8 +155,13 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         super.onDestroy();
     }
 
-    public void onEventMainThread(EventMainRefresh e){
-        onButtonCheckedNoChange(bottomBar.getButtonActivited());
+    public void onEventMainThread(EventMainRefresh e) {
+        onButtonCheckedChanged(bottomBar.getButtonActivated());
+    }
 
+    public void onEventMainThread(EventLogin e){
+        if(bottomBar.getButtonActivated()==3){
+            onButtonCheckedChanged(3);
+        }
     }
 }

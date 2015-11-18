@@ -8,25 +8,25 @@ import android.widget.Toast;
  */
 public class ToastUtil {
     private static String oldMsg;
-    protected static Toast toast = null;
+    protected static Toast toastNormal = null;
     private static long oneTime = 0;
     private static long twoTime = 0;
 
     public static void showToast(Context context, String s) {
-        if (toast == null) {
-            toast = Toast.makeText(context, s, Toast.LENGTH_SHORT);
-            toast.show();
+        if (toastNormal == null) {
+            toastNormal = Toast.makeText(context, s, Toast.LENGTH_SHORT);
+            toastNormal.show();
             oneTime = System.currentTimeMillis();
         } else {
             twoTime = System.currentTimeMillis();
             if (s.equals(oldMsg)) {
                 if (twoTime - oneTime > Toast.LENGTH_SHORT) {
-                    toast.show();
+                    toastNormal.show();
                 }
             } else {
                 oldMsg = s;
-                toast.setText(s);
-                toast.show();
+                toastNormal.setText(s);
+                toastNormal.show();
             }
         }
         oneTime = twoTime;

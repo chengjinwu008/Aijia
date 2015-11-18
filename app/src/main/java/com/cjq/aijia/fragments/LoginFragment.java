@@ -12,7 +12,11 @@ import android.widget.EditText;
 import com.cjq.aijia.R;
 import com.cjq.aijia.activity.FindPasswordActivity;
 import com.cjq.aijia.activity.RegisterActivity;
+import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.util.WebUtil;
+import com.ypy.eventbus.EventBus;
+
+import org.json.JSONException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -84,11 +88,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String userName =  userNameText.getText().toString();
         String password = passwordText.getText().toString();
 
-        WebUtil.requestLogin(userName, password, new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
+        try {
+            WebUtil.requestLogin(getActivity(),userName, password, new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new EventLogin());
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -34,13 +34,14 @@ public class WebViewFragment extends Fragment{
     WebView webView;
     @InjectView(R.id.web_refresh)
     SwipeRefreshLayout refreshLayout;
+    String url=CommonData.INDEX_URL;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_web,container,false);
         ButterKnife.inject(this, view);
-        webView.loadUrl(CommonData.INDEX_URL);
+        webView.loadUrl(url);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color),getResources().getColor(R.color.colorAccent));
         return view;
     }

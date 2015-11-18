@@ -45,8 +45,9 @@
             android:value="com.cjq.aijia.domain" />
 
         <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.LogoActivity" />
         <activity android:name=".activity.SetPasswordActivity" />
-        <activity android:name=".activity.FindPasswordActivity"></activity>
+        <activity android:name=".activity.FindPasswordActivity"/>
     </application>
 
 </manifest>

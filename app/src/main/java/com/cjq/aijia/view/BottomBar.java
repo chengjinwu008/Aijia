@@ -24,7 +24,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
     private int buttonOn = 0;
     private OnButtonCheckedListener checkedListener;
 
-    public int getButtonActivited() {
+    public int getButtonActivated() {
         return buttonOn;
     }
 
@@ -38,7 +38,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
 
     public interface OnButtonCheckedListener{
         public void onButtonChecked(int No);
-        public void onButtonCheckedNoChange(int No);
+        public void onButtonCheckedChanged(int No);
     }
 
     public BottomBar(Context context) {
@@ -103,7 +103,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
             nb.setImageResource(bx.getImageOnId());
             nb.setBackgroundResource(bx.getBackgroundOn());
             if(checkedListener!=null)
-            checkedListener.onButtonCheckedNoChange(No);
+            checkedListener.onButtonCheckedChanged(No);
             if(bx.getCheckedInterface()!=null)
             bx.getCheckedInterface().onChecked();
         }
