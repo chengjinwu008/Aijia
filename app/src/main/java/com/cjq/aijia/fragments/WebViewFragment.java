@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.cjq.aijia.CommonData;
@@ -42,6 +43,12 @@ public class WebViewFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_web,container,false);
         ButterKnife.inject(this, view);
         webView.loadUrl(url);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        WebSettings webSettings = webView.getSettings();
+
+        webSettings.setJavaScriptEnabled(true);
+
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color),getResources().getColor(R.color.colorAccent));
         return view;
     }
