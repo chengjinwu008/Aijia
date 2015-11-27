@@ -47,10 +47,9 @@ public class TimerRunnable implements Runnable {
                     @Override
                     public void run() {
                         requestVerify.setText("发送验证码");
+                        requestVerify.setEnabled(true);
                     }
                 });
-
-                requestVerify.setEnabled(true);
                 super.run();
             }
         }.start();

@@ -1,26 +1,24 @@
 package com.cjq.aijia.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.cjq.aijia.R;
-import com.cjq.aijia.entity.EventLogin;
-import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.util.ToastUtil;
 import com.cjq.aijia.util.Validator;
 import com.cjq.aijia.util.WebUtil;
-import com.ypy.eventbus.EventBus;
 
 import org.json.JSONException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener{
 
     public final static String FLAG_REGISTER = "register";
     public final static String FLAG_RESET = "reset";
@@ -38,6 +36,14 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
     private String mobile;
     private String verify;
     private String flag;
+    private boolean threadFlag=true;
+    Handler handler = new Handler();
+
+    @Override
+    protected void onDestroy() {
+        threadFlag = false;
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         ButterKnife.inject(this);
 
         close.setOnClickListener(this);
+        done.setOnClickListener(this);
         Intent intent = getIntent();
 
         userName = intent.getStringExtra("userName");
@@ -59,8 +66,44 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
             finish();
         }
 
-        passwordNew.setOnFocusChangeListener(this);
-        passwordConfirm.setOnFocusChangeListener(this);
+        new Thread(){
+            @Override
+            public void run() {
+                while (threadFlag){
+                    String pn =  passwordNew.getText().toString();
+                    String pc =  passwordConfirm.getText().toString();
+                    if(Validator.checkPassword(pn) && pn.equals(pc)){
+                        if(!done.isEnabled()){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    done.setBackgroundResource(R.drawable.button1);
+                                    done.setEnabled(true);
+                                }
+                            });
+                        }
+                    }else{
+                        if(done.isEnabled()){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    done.setBackgroundResource(R.drawable.button3);
+                                    done.setEnabled(false);
+                                }
+                            });
+                        }
+                    }
+
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                super.run();
+            }
+        }.start();
     }
 
     @Override
@@ -105,25 +148,6 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
                 }
 
                 break;
-        }
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if(!hasFocus){
-            String pn =  passwordNew.getText().toString();
-            String pc =  passwordConfirm.getText().toString();
-            if(Validator.checkPassword(pn) && pn.equals(pc)){
-                if(!done.isEnabled()){
-                    done.setBackgroundResource(R.drawable.button1);
-                    done.setEnabled(true);
-                }
-            }else{
-                if(done.isEnabled()){
-                    done.setBackgroundResource(R.drawable.button3);
-                    done.setEnabled(false);
-                }
-            }
         }
     }
 }

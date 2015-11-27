@@ -93,7 +93,6 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         switch (No) {
             case 3:
                 //跳转个人中心
-
                 if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
                     try {
                         SaveTool.getUserId(this);
@@ -134,7 +133,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         if (fragments.get(key).isHidden())
             transaction.show(fragments.get(key));
 
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     //对webview分类处理

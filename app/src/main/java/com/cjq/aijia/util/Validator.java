@@ -11,7 +11,7 @@ public class Validator {
 
     public static boolean checkName(String userNameText) {
         int len = userNameText.length();
-        return !(len < 3 || len > 15) && !"_".equals(userNameText.substring(0, 1)) && !userNameText.matches("^\\d*$");
+        return !(len < 3 || len > 15) && !"_".equals(userNameText.substring(0, 1)) && !userNameText.matches("^\\d*$") && !userNameText.substring(0, 1).matches("\\d");
     }
 
     public static boolean checkPassword(String pn) {

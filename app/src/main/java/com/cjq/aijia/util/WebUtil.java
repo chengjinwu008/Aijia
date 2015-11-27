@@ -58,6 +58,7 @@ public class WebUtil {
                         SaveTool.save(context, "key", data.getString("key"));
                         SaveTool.save(context, "userId", data.getString("userId"));
                         EventBus.getDefault().post(new EventLogin());
+                        if(dealAfterSuccess!=null)
                         dealAfterSuccess.run();
                     } else {
                         ToastUtil.showToast(context, res.getString("msg"));
@@ -111,11 +112,13 @@ public class WebUtil {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                     // 请求登录成功返回数据
+                    System.out.println(new String(response));
                     try {
                         JSONObject res = new JSONObject(new String(response));
 
                         if ("0000".equals(res.getString("code"))) {
                             ToastUtil.showToast(context, context.getString(R.string.request_msg_hint));
+                            if(dealAfterSuccess!=null)
                             dealAfterSuccess.run();
                         } else {
                             ToastUtil.showToast(context, res.getString("msg"));
@@ -188,6 +191,7 @@ public class WebUtil {
                     JSONObject res = new JSONObject(new String(responseBody));
 
                     if ("0000".equals(res.getString("code"))) {
+                        if(dealAfterSuccess!=null)
                         dealAfterSuccess.run();
                     } else {
                         ToastUtil.showToast(context, res.getString("msg"));
@@ -241,6 +245,7 @@ public class WebUtil {
                         SaveTool.save(context, "key", data.getString("key"));
                         SaveTool.save(context, "userId", data.getString("userId"));
                         EventBus.getDefault().post(new EventLogin());
+                        if(dealAfterSuccess!=null)
                         dealAfterSuccess.run();
                     } else {
                         ToastUtil.showToast(context, res.getString("msg"));
@@ -273,7 +278,7 @@ public class WebUtil {
         JSONObject dataObj = new JSONObject();
         dataObj.put("phoneNumber", mobile);
         dataObj.put("vCode", verify);
-        paramObj.put("code", "0014");
+        paramObj.put("code", "0007");
         paramObj.put("data", dataObj);
         params.put("opjson", paramObj.toString());
 
@@ -284,6 +289,7 @@ public class WebUtil {
                     JSONObject res = new JSONObject(new String(responseBody));
 
                     if ("0000".equals(res.getString("code"))) {
+                        if(dealAfterSuccess!=null)
                         dealAfterSuccess.run();
                     } else {
                         ToastUtil.showToast(context, res.getString("msg"));
@@ -329,6 +335,7 @@ public class WebUtil {
                     JSONObject res = new JSONObject(new String(responseBody));
 
                     if ("0000".equals(res.getString("code"))) {
+                        if(dealAfterSuccess!=null)
                         dealAfterSuccess.run();
                     } else {
                         ToastUtil.showToast(context, res.getString("msg"));
