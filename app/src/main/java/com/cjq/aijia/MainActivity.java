@@ -12,6 +12,7 @@ import com.cjq.aijia.activity.LogoActivity;
 import com.cjq.aijia.entity.BottomButton;
 import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.EventMainRefresh;
+import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.fragments.LoginFragment;
 import com.cjq.aijia.fragments.NoNetworkFragment;
 import com.cjq.aijia.fragments.UserCenterFragment;
@@ -20,6 +21,7 @@ import com.cjq.aijia.service.CheckService;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.WebUtil;
 import com.cjq.aijia.view.BottomBar;
+import com.ypy.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -137,7 +139,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     //对webview分类处理
     private void dealWebView(int no) {
-
+        EventBus.getDefault().post(new EventWebChange(no));
     }
 
     @Override

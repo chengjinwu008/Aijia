@@ -1,7 +1,5 @@
 package com.cjq.aijia.fragments;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,11 +7,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
+import com.cjq.aijia.entity.EventWebChange;
+import com.ypy.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,7 +23,7 @@ import butterknife.InjectView;
 /**
  * Created by CJQ on 2015/11/12.
  */
-public class WebViewFragment extends Fragment{
+public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static Fragment INSTANCE;
 
@@ -37,19 +39,49 @@ public class WebViewFragment extends Fragment{
     SwipeRefreshLayout refreshLayout;
     String url=CommonData.INDEX_URL;
 
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_web,container,false);
+        EventBus.getDefault().register(this);
         ButterKnife.inject(this, view);
-        webView.loadUrl(url);
+        webView.loadUrl(url+"");
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
         WebSettings webSettings = webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient(){
+
+        });
+
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if(refreshLayout.isRefreshing())
+                    refreshLayout.setRefreshing(false);
+            }
+        });
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color),getResources().getColor(R.color.colorAccent));
+        refreshLayout.setOnRefreshListener(this);
         return view;
+    }
+
+    public void onEventMainThread(EventWebChange webChange){
+        this.url = webChange.getUrl();
+        webView.loadUrl(url+"");
+    }
+
+    @Override
+    public void onRefresh() {
+        webView.loadUrl(url+"");
     }
 }
