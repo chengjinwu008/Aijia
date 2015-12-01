@@ -17,7 +17,7 @@ import com.cjq.aijia.util.SaveTool;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class CommonWebviewActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class CommonWebViewActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.common_title)
     TextView title;
