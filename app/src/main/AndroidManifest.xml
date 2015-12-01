@@ -47,7 +47,8 @@
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LogoActivity" />
         <activity android:name=".activity.SetPasswordActivity" />
-        <activity android:name=".activity.FindPasswordActivity"/>
+        <activity android:name=".activity.FindPasswordActivity" />
+        <activity android:name=".activity.CommonWebViewActivity"></activity>
     </application>
 
 </manifest>

@@ -72,10 +72,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         fragments.put("uc", UserCenterFragment.getInstance());
         fragments.put("login", LoginFragment.getInstance());
         fragments.put("no_net", NoNetworkFragment.getInstance());
-//        manager.beginTransaction().add(R.id.main_content, fragments.get("web")).commit();
 
         if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
-            changeFragment("web");
             dealWebView(0);
         } else {
             changeFragment("no_net");
@@ -107,7 +105,6 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
                 break;
             default:
                 if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
-                    changeFragment("web");
                     dealWebView(No);
                 } else {
                     changeFragment("no_net");
@@ -138,7 +135,19 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     //对webview分类处理
     private void dealWebView(int no) {
-        EventBus.getDefault().post(new EventWebChange(no));
+        if(no==2)
+            try {
+                SaveTool.getUserId(this);
+                changeFragment("web");
+                EventBus.getDefault().post(new EventWebChange(no));
+            } catch (Exception e) {
+                bottomBar.changeColor(3);
+                changeFragment("login");
+            }
+        else{
+            changeFragment("web");
+            EventBus.getDefault().post(new EventWebChange(no));
+        }
     }
 
     @Override
@@ -162,7 +171,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     public void onEventMainThread(EventLogin e){
         if(bottomBar.getButtonActivated()==3){
-            onButtonCheckedChanged(3);
+            onButtonCheckedChanged(bottomBar.getButtonActivated());
         }
     }
 }

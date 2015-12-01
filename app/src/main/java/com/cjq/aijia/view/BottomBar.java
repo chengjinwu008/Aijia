@@ -1,6 +1,7 @@
 package com.cjq.aijia.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -92,20 +93,29 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
         }
 
         if(buttonOn!=No){
-            BottomButton b = buttons.get(buttonOn);
-            ImageView bi = (ImageView) getChildAt(buttonOn);
-            bi.setImageResource(b.getImageOffId());
-            bi.setBackgroundResource(b.getBackgroundOff());
-            buttonOn=No;
-            ImageView nb = (ImageView) v;
-            BottomButton bx = buttons.get(buttonOn);
-
-            nb.setImageResource(bx.getImageOnId());
-            nb.setBackgroundResource(bx.getBackgroundOn());
+            BottomButton bx = changeColor(No);
             if(checkedListener!=null)
             checkedListener.onButtonCheckedChanged(No);
             if(bx.getCheckedInterface()!=null)
             bx.getCheckedInterface().onChecked();
         }
+    }
+
+
+    @NonNull
+    public BottomButton changeColor(int no) {
+        BottomButton bx = buttons.get(no);
+        if(no!=buttonOn){
+            ImageView v = (ImageView) getChildAt(no);
+            BottomButton b = buttons.get(buttonOn);
+            ImageView bi = (ImageView) getChildAt(buttonOn);
+            bi.setImageResource(b.getImageOffId());
+            bi.setBackgroundResource(b.getBackgroundOff());
+            buttonOn= no;
+
+            v.setImageResource(bx.getImageOnId());
+            v.setBackgroundResource(bx.getBackgroundOn());
+        }
+        return bx;
     }
 }

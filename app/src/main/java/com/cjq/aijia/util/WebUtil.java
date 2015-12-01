@@ -102,7 +102,7 @@ public class WebUtil {
             paramObj.put("data", dataObj);
             params.put("opjson", paramObj.toString());
 
-            HttpUtilsAsync.post(CommonData.SHORTMSG_URL, params, new AsyncHttpResponseHandler() {
+            HttpUtilsAsync.post(CommonData.SHORT_MSG_URL, params, new AsyncHttpResponseHandler() {
 
                 @Override
                 public void onStart() {
