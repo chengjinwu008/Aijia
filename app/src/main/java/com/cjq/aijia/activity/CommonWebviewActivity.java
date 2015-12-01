@@ -70,8 +70,17 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
     private void dealURL(String urlS) {
         try {
-            url = urlS+SaveTool.getKey(this);
+            if(urlS.contains("?")){
+                if(!urlS.contains("key")){
+                    url = urlS+"&key="+SaveTool.getKey(this);
+                }else{
+                    url= urlS.replaceFirst("key=\\w+&","key="+SaveTool.getKey(this)+"&");
+                }
+            }else{
+                url = urlS+"?key="+SaveTool.getKey(this);
+            }
         } catch (Exception e) {
+            url = urlS;
             e.printStackTrace();
         }
     }

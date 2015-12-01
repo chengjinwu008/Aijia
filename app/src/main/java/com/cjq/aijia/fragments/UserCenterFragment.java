@@ -61,7 +61,7 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
                 startCommonWeb("互动社区",CommonData.INTERACTIVE_AREA_URL);
                 break;
             case R.id.user_center_my_collection:
-                startCommonWeb("互动社区",CommonData.MY_COLLECTION_URL);
+                startCommonWeb("我的收藏",CommonData.MY_COLLECTION_URL);
                 break;
         }
     }

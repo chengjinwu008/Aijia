@@ -90,8 +90,17 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void dealURL(String urlS) {
         try {
-            url = urlS + SaveTool.getKey(getActivity());
+            if(urlS.contains("?")){
+                if(!urlS.contains("key")){
+                    url = urlS+"&key="+SaveTool.getKey(getActivity());
+                }else{
+                    url= urlS.replaceFirst("key=\\w+&","key="+SaveTool.getKey(getActivity())+"&");
+                }
+            }else{
+                url = urlS+"?key="+SaveTool.getKey(getActivity());
+            }
         } catch (Exception e) {
+            url = urlS;
             e.printStackTrace();
         }
     }
