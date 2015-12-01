@@ -20,6 +20,7 @@
             android:textSize="@dimen/nav_text_size" />
 
         <View
+            android:id="@+id/user_center_config"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentEnd="true"

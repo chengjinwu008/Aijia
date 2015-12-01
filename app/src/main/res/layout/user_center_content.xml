@@ -51,6 +51,7 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/user_center_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="用户名"
@@ -58,6 +59,7 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/user_center_points"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="积分：120积分"
@@ -77,7 +79,7 @@
                 android:background="#eaeaea" />
 
             <RelativeLayout
-                android:id="@+id/relativeLayout3"
+                android:id="@+id/user_center_my_orders"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_alignParentLeft="true"
@@ -118,7 +120,7 @@
                 android:layout_height="1px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/relativeLayout3"
+                android:layout_below="@+id/user_center_my_orders"
                 android:background="#eaeaea" />
 
             <LinearLayout
@@ -133,6 +135,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/user_center_waiting_payment"
                     android:gravity="center"
                     android:singleLine="true"
                     android:layout_width="0dp"
@@ -144,6 +147,7 @@
                     android:textColor="#999" />
 
                 <TextView
+                    android:id="@+id/user_center_waiting_sending"
                     android:gravity="center"
                     android:singleLine="true"
                     android:layout_width="0dp"
@@ -155,6 +159,7 @@
                     android:textColor="#999" />
 
                 <TextView
+                    android:id="@+id/user_center_waiting_receiving"
                     android:gravity="center"
                     android:singleLine="true"
                     android:layout_width="0dp"
@@ -166,6 +171,7 @@
                     android:textColor="#999" />
 
                 <TextView
+                    android:id="@+id/user_center_done"
                     android:singleLine="true"
                     android:gravity="center"
                     android:layout_width="0dp"
@@ -205,7 +211,7 @@
                 android:background="#eaeaea" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/user_center_points_shopping_mall"
                 style="@style/UserCenterBars"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -219,11 +225,11 @@
                 android:layout_height="1px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView2"
+                android:layout_below="@+id/user_center_points_shopping_mall"
                 android:background="#eaeaea" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/user_center_interactive_area"
                 style="@style/UserCenterBars"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -237,11 +243,11 @@
                 android:layout_height="1px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView"
+                android:layout_below="@+id/user_center_interactive_area"
                 android:background="#eaeaea" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/user_center_my_collection"
                 style="@style/UserCenterBars"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -255,11 +261,11 @@
                 android:layout_height="1px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView3"
+                android:layout_below="@+id/user_center_my_collection"
                 android:background="#eaeaea" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/user_center_my_tracks"
                 style="@style/UserCenterBars"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -273,11 +279,11 @@
                 android:layout_height="1px"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView4"
+                android:layout_below="@+id/user_center_my_tracks"
                 android:background="#eaeaea" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/user_center_charge_online"
                 style="@style/UserCenterBars"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -288,7 +294,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_below="@id/textView5"
+                android:layout_below="@id/user_center_charge_online"
                 android:background="#eaeaea" />
 
         </RelativeLayout>
