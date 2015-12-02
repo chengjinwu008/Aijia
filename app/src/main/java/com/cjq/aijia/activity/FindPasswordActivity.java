@@ -36,6 +36,8 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
     View dividerTwo;
     @InjectView(R.id.find_password_divider_one)
     View dividerOne;
+    @InjectView(R.id.find_password_title)
+    TextView title;
 
     private boolean threadFlag=true;
     private Handler handler = new Handler();
@@ -62,6 +64,7 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         String mobileNum = getIntent().getStringExtra("mobile");
 
         if(mobileNum!=null && !"".equals(mobileNum)){
+            title.setText("修改密码");
             mobile.setText(mobileNum);
             mobile.setEnabled(false);
             dividerOne.setVisibility(View.INVISIBLE);
