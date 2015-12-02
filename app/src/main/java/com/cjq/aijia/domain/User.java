@@ -1,16 +1,20 @@
 package com.cjq.aijia.domain;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Column;
+import com.orm.dsl.Ignore;
 
 /**
  * Created by CJQ on 2015/11/12.
  */
-public class User extends SugarRecord<User>{
+public class User extends SugarRecord{
     String userName;
+    @Ignore
     String password;
     String mobile;
     String profile;
     String points;
+    @Column(name = "user_id",notNull  = true,unique = true)
     String userId;
 
     public String getUserId() {

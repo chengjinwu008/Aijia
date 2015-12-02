@@ -16,11 +16,13 @@ import com.cjq.aijia.R;
 import com.cjq.aijia.activity.CommonWebViewActivity;
 import com.cjq.aijia.activity.SettingActivity;
 import com.cjq.aijia.domain.User;
+import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.UserInfo;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.UserInfoDealer;
 import com.cjq.aijia.util.WebUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.ypy.eventbus.EventBus;
 
 import java.util.List;
 
@@ -56,6 +58,17 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     SwipeRefreshLayout refreshLayout;
 
     private String mobile;
+    private boolean isFetching=false;
+
+    public void onEventMainThread(EventLogin e) {
+        requestUserInfo();
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
+    }
 
     @Nullable
     @Override
@@ -63,52 +76,64 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_user_center, container, false);
         ButterKnife.inject(this, view);
 
+        EventBus.getDefault().register(this);
+
         pointsShoppingMall.setOnClickListener(this);
         interactiveArea.setOnClickListener(this);
         myCollection.setOnClickListener(this);
         config.setOnClickListener(this);
 
-        requestUserInfo();
-
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
-
+        requestUserInfo();
         return view;
     }
 
-    private void requestUserInfo(){
-
+    private User getUserInfoLocal() {
         List<User> users = null;
         try {
             users = User.find(User.class, "user_id = ?", SaveTool.getUserId(getActivity()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final User user = users!=null&&users.size()!=0 ? users.get(0) : null;
+        final User user = users != null && users.size() != 0 ? users.get(0) : null;
 
-        if(user!=null)
+        if (user != null)
             dealUserInfo(user);
+        return user;
+    }
 
+    private void requestUserInfo() {
+        getUserInfoOnline(getUserInfoLocal());
+    }
+
+    private void getUserInfoOnline(final User user) {
         try {
             WebUtil.requestUserInfo(getActivity(), new UserInfoDealer() {
                 @Override
                 public void dealWithInfo(UserInfo info) {
                     dealUserInfo(info);
-                    if(user!=null){
+                    if (user != null) {
                         user.setUserName(info.getUserName());
                         user.setMobile(info.getPhoneNumber());
                         user.setPoints(info.getUserPoints());
                         user.setProfile(info.getUserAvatar());
                         user.save();
-                    }else{
-                        User userN = new User(info.getUserName(),info.getPhoneNumber(),info.getUserPoints(),info.getUserAvatar());
-                        userN.save();
+                    } else {
+                        try {
+                            User userN = new User(info.getUserName(), info.getPhoneNumber(), info.getUserPoints(), info.getUserAvatar());
+                            userN.setUserId(SaveTool.getUserId(getActivity()));
+                            userN.save();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void dealUserInfo(UserInfo info) {
@@ -165,4 +190,6 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
             e.printStackTrace();
         }
     }
+
+
 }
