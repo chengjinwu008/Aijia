@@ -56,6 +56,19 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     TextView userPoints;
     @InjectView(R.id.user_center_refresh)
     SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.user_center_my_orders)
+    View allOrders;
+    @InjectView(R.id.user_center_waiting_payment)
+    View waitingPayment;
+    @InjectView(R.id.user_center_waiting_sending)
+    View waitingSending;
+    @InjectView(R.id.user_center_waiting_receiving)
+    View waitingReceiving;
+    @InjectView(R.id.user_center_done)
+    View done;
+    @InjectView(R.id.user_center_my_tracks)
+    View myTracks;
+
 
     private String mobile;
     private boolean isFetching=false;
@@ -82,6 +95,12 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
         interactiveArea.setOnClickListener(this);
         myCollection.setOnClickListener(this);
         config.setOnClickListener(this);
+        allOrders.setOnClickListener(this);
+        waitingPayment.setOnClickListener(this);
+        waitingSending.setOnClickListener(this);
+        waitingReceiving.setOnClickListener(this);
+        done.setOnClickListener(this);
+        myTracks.setOnClickListener(this);
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
@@ -158,13 +177,31 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_center_points_shopping_mall:
-                startCommonWeb("积分商城", CommonData.POINT_SHOPPING_MALL_URL);
+                CommonWebViewActivity.startCommonWeb(getActivity(),"积分商城", CommonData.POINT_SHOPPING_MALL_URL);
                 break;
             case R.id.user_center_interactive_area:
-                startCommonWeb("互动社区", CommonData.INTERACTIVE_AREA_URL);
+                CommonWebViewActivity.startCommonWeb(getActivity(),"互动社区", CommonData.INTERACTIVE_AREA_URL);
                 break;
             case R.id.user_center_my_collection:
-                startCommonWeb("我的收藏", CommonData.MY_COLLECTION_URL);
+                CommonWebViewActivity.startCommonWeb(getActivity(),"我的收藏", CommonData.MY_COLLECTION_URL);
+                break;
+            case R.id.user_center_my_orders:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"订单", CommonData.ALL_ORDER_LIST);
+                break;
+            case R.id.user_center_waiting_payment:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"订单", CommonData.ORDER_WAITING_PAYMENT);
+                break;
+            case R.id.user_center_waiting_sending:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"订单", CommonData.ORDER_WAITING_SENDING);
+                break;
+            case R.id.user_center_waiting_receiving:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"订单", CommonData.ORDER_WAITING_RECEIVING);
+                break;
+            case R.id.user_center_done:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"订单", CommonData.ORDER_DONE);
+                break;
+            case R.id.user_center_my_tracks:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"我的足迹", CommonData.HISTORY);
                 break;
             case R.id.user_center_config:
                 Intent intent = new Intent(getActivity(), SettingActivity.class);
@@ -172,13 +209,6 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
         }
-    }
-
-    private void startCommonWeb(String title, String url) {
-        Intent intent = new Intent(getActivity(), CommonWebViewActivity.class);
-        intent.putExtra(CommonWebViewActivity.EXTRA_TITLE, title);
-        intent.putExtra(CommonWebViewActivity.EXTRA_URL, url);
-        startActivity(intent);
     }
 
     @Override

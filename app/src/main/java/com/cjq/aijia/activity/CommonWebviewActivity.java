@@ -1,5 +1,6 @@
 package com.cjq.aijia.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -98,5 +99,12 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
     public void onRefresh() {
         dealURL(url);
         web.loadUrl(url);
+    }
+
+    public static void startCommonWeb(Context context, String title, String url) {
+        Intent intent = new Intent(context, CommonWebViewActivity.class);
+        intent.putExtra(CommonWebViewActivity.EXTRA_TITLE, title);
+        intent.putExtra(CommonWebViewActivity.EXTRA_URL, url);
+        context.startActivity(intent);
     }
 }

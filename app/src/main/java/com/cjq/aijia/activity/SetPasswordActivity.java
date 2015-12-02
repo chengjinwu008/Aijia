@@ -145,6 +145,22 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
                         }
 
                         break;
+
+                    case FLAG_RESET:
+
+                        try {
+                            WebUtil.requestFindPassword(this, mobile, verify, passwordNew.getText().toString(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtil.showToast(SetPasswordActivity.this,"密码已经更改成功");
+                                    finish();
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
                 }
 
                 break;

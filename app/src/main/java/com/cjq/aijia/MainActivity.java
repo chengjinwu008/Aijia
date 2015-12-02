@@ -1,6 +1,7 @@
 package com.cjq.aijia;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.cjq.aijia.fragments.LoginFragment;
 import com.cjq.aijia.fragments.NoNetworkFragment;
 import com.cjq.aijia.fragments.UserCenterFragment;
 import com.cjq.aijia.fragments.WebViewFragment;
+import com.cjq.aijia.reveiver.NetworkReceiver;
 import com.cjq.aijia.service.CheckService;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.WebUtil;
@@ -42,6 +44,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     private Map<String, Fragment> fragments = new HashMap<>();
 
     private FragmentManager manager;
+    private NetworkReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +60,15 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         ButterKnife.inject(this);
 
         intent = new Intent(this, CheckService.class);
+        receiver = new NetworkReceiver();
 
         if (savedInstanceState == null) {
             Bmob.initialize(this, "6e5ad2c79bb81e156aec8a5c38a09f05");
             ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
             startService(intent);
+            //注册网络监控监听
+            IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+            registerReceiver(receiver,filter);
         }
 
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));
@@ -165,6 +172,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(receiver);
         stopService(intent);
         super.onDestroy();
     }

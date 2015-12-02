@@ -408,7 +408,7 @@ public class WebUtil {
         paramObj.put("code", "0004");
         paramObj.put("data", dataObj);
         params.put("opjson", paramObj.toString());
-        HttpUtilsAsync.post(CommonData.LOGOUT_URL, params, new AsyncHttpResponseHandler() {
+        HttpUtilsAsync.post(CommonData.USER_INFO_URL, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if(responseBody!=null){

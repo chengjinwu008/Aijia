@@ -124,7 +124,10 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                             Intent intent =new Intent(FindPasswordActivity.this,SetPasswordActivity.class);
                             intent.putExtra("mobile",mobile.getText().toString());
                             intent.putExtra("verify",verify.getText().toString());
+                            if(mobile.isEnabled())
                             intent.putExtra("flag",SetPasswordActivity.FLAG_FIND);
+                            else
+                            intent.putExtra("flag",SetPasswordActivity.FLAG_RESET);
                             startActivity(intent);
                             finish();
                         }

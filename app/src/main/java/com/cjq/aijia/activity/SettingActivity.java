@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
 import com.cjq.aijia.adapter.SettingAdapter;
 import com.cjq.aijia.entity.EventJumpIndex;
@@ -91,8 +92,7 @@ public class SettingActivity extends AppCompatActivity implements SettingAdapter
                 }
                 break;
             case 0:
-                // TODO: 2015/12/2 地址管理
-
+                CommonWebViewActivity.startCommonWeb(this,"收货地址", CommonData.ADDRESS_LIST_URL);
                 break;
             case 1:
                 // TODO: 2015/12/2 绑定会员卡

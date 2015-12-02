@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">Aijia</string>
+    <string name="app_name">爱家商城</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="request_msg_hint">验证码已通过短信的方式发送到您的手机</string>
 </resources>

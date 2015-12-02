@@ -15,6 +15,12 @@ public class CommonData {
     public static String INTERACTIVE_AREA_URL = MAIN_URL+"/wap/tmpl/member/community_index.html";
     public static String MY_COLLECTION_URL = MAIN_URL+"/wap/tmpl/member/favorites.html";
     public static String ADDRESS_LIST_URL = MAIN_URL+"/wap/tmpl/member/address_list.html";
+    public static String ALL_ORDER_LIST = MAIN_URL+"/wap/tmpl/member/order_list.html";
+    public static String ORDER_WAITING_PAYMENT = MAIN_URL+"/wap/tmpl/member/order_list.html?otype=2 ";
+    public static String ORDER_WAITING_SENDING = MAIN_URL+"/wap/tmpl/member/order_list.html?otype=3 ";
+    public static String ORDER_WAITING_RECEIVING = MAIN_URL+"/wap/tmpl/member/order_list.html?otype=4 ";
+    public static String ORDER_DONE = MAIN_URL+"/wap/tmpl/member/order_list.html?otype=5";
+    public static String HISTORY = MAIN_URL+"/wap/tmpl/member/Views_list.html";
 
     public static String LOGIN_URL = MAIN_URL+"/service/app.php";
     public static String SHORT_MSG_URL = MAIN_URL+"/service/app.php";
