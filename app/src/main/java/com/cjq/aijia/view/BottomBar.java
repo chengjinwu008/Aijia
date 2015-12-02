@@ -100,8 +100,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
             bx.getCheckedInterface().onChecked();
         }
     }
-
-
     @NonNull
     public BottomButton changeColor(int no) {
         BottomButton bx = buttons.get(no);

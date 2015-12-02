@@ -1,8 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.UserCenterFragment">
+    android:orientation="vertical"
+    tools:context="com.cjq.aijia.activity.SettingActivity">
 
     <RelativeLayout
         android:id="@+id/nav1"
@@ -15,26 +17,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="我的"
+            android:text="设置"
             android:textColor="@color/pure_white"
             android:textSize="@dimen/nav_text_size" />
 
         <ImageView
-            android:padding="4dp"
-            android:id="@+id/user_center_config"
+            android:scaleType="centerInside"
+            android:id="@+id/setting_close"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
             android:layout_centerVertical="true"
-            android:src="@drawable/shezhi" />
+            android:src="@drawable/fanhui_one" />
     </RelativeLayout>
 
-    <include
+    <android.support.v7.widget.RecyclerView
+        android:divider="@color/common_background"
+        android:dividerHeight="1dp"
+        android:background="@color/common_background"
+        android:id="@+id/setting_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/nav1"
-        layout="@layout/user_center_content" />
-
-
-</RelativeLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

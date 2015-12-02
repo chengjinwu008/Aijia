@@ -20,4 +20,6 @@ public class CommonData {
     public static String SHORT_MSG_URL = MAIN_URL+"/service/app.php";
     public static String CHECK_INFO_URL = MAIN_URL+"/service/app.php";
     public static final String FIND_PASSWORD_CHECK_URL =MAIN_URL+"/service/app.php" ;
+    public static final String LOGOUT_URL =MAIN_URL+"/service/app.php" ;
+    public static final String USER_INFO_URL =MAIN_URL+"/service/app.php" ;
 }

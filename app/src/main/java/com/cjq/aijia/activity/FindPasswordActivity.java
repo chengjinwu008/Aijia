@@ -59,6 +59,14 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         mobile.setOnFocusChangeListener(this);
         verify.setOnFocusChangeListener(this);
 
+        String mobileNum = getIntent().getStringExtra("mobile");
+
+        if(mobileNum!=null && !"".equals(mobileNum)){
+            mobile.setText(mobileNum);
+            mobile.setEnabled(false);
+            dividerOne.setVisibility(View.INVISIBLE);
+        }
+
         new Thread() {
             @Override
             public void run() {

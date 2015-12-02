@@ -40,4 +40,9 @@ public class SaveTool {
             return res;
         throw new Exception("没有登录");
     }
+
+    public static void clear(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        preferences.edit().clear().commit();
+    }
 }

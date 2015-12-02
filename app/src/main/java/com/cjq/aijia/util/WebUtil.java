@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
 import com.cjq.aijia.entity.EventLogin;
+import com.cjq.aijia.entity.UserInfo;
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.marshalchen.common.commonUtils.urlUtils.HttpUtilsAsync;
@@ -349,6 +351,89 @@ public class WebUtil {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
+            }
+        });
+    }
+
+    /**
+     * 登出
+     * @param context 上下文
+     * @param dealAfterSuccess 后处理
+     * @throws Exception
+     */
+    public static void requestLogout(final Context context, final Runnable dealAfterSuccess) throws Exception {
+        RequestParams params = new RequestParams();
+
+        JSONObject paramObj = new JSONObject();
+        JSONObject dataObj = new JSONObject();
+        dataObj.put("userId", SaveTool.getUserId(context));
+        dataObj.put("key", SaveTool.getKey(context));
+        paramObj.put("code", "0009");
+        paramObj.put("data", dataObj);
+        params.put("opjson", paramObj.toString());
+        HttpUtilsAsync.post(CommonData.LOGOUT_URL, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if(responseBody!=null){
+                    String string = new String(responseBody);
+                    try {
+                        JSONObject json = new JSONObject(string);
+                        String code = json.getString("code");
+                        if("0000".equals(code)){
+                            SaveTool.clear(context);
+                            if(dealAfterSuccess!=null)
+                            dealAfterSuccess.run();
+                        }else{
+                            ToastUtil.showToast(context,json.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                ToastUtil.showToast(context,"登出失败");
+            }
+        });
+    }
+
+    public static void requestUserInfo(final  Context context,final UserInfoDealer dealAfterSuccess) throws Exception {
+        RequestParams params = new RequestParams();
+
+        JSONObject paramObj = new JSONObject();
+        JSONObject dataObj = new JSONObject();
+        dataObj.put("key", SaveTool.getKey(context));
+        paramObj.put("code", "0004");
+        paramObj.put("data", dataObj);
+        params.put("opjson", paramObj.toString());
+        HttpUtilsAsync.post(CommonData.LOGOUT_URL, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if(responseBody!=null){
+                    String string = new String(responseBody);
+                    try {
+                        JSONObject json = new JSONObject(string);
+                        String code = json.getString("code");
+                        if("0000".equals(code)){
+                            if(dealAfterSuccess!=null){
+                                Gson gson = new Gson();
+                                UserInfo info = gson.fromJson(json.getJSONObject("data").toString(), UserInfo.class);
+                                dealAfterSuccess.dealWithInfo(info);
+                            }
+                        }else{
+                            ToastUtil.showToast(context,json.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                ToastUtil.showToast(context,"请求失败");
             }
         });
     }

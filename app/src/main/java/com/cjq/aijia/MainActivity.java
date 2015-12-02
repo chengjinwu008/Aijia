@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 
 import com.cjq.aijia.activity.LogoActivity;
 import com.cjq.aijia.entity.BottomButton;
+import com.cjq.aijia.entity.EventJumpIndex;
 import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.entity.EventWebChange;
@@ -21,6 +22,8 @@ import com.cjq.aijia.service.CheckService;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.WebUtil;
 import com.cjq.aijia.view.BottomBar;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ypy.eventbus.EventBus;
 
 import java.util.HashMap;
@@ -57,6 +60,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
         if (savedInstanceState == null) {
             Bmob.initialize(this, "6e5ad2c79bb81e156aec8a5c38a09f05");
+            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
             startService(intent);
         }
 
@@ -167,6 +171,11 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     public void onEventMainThread(EventMainRefresh e) {
         onButtonCheckedChanged(bottomBar.getButtonActivated());
+    }
+
+    public void onEventMainThread(EventJumpIndex e) {
+        onButtonCheckedChanged(e.getNum());
+        bottomBar.changeColor(e.getNum());
     }
 
     public void onEventMainThread(EventLogin e){
