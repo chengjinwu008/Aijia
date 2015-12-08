@@ -64,6 +64,10 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     View waitingSending;
     @InjectView(R.id.user_center_waiting_receiving)
     View waitingReceiving;
+    @InjectView(R.id.user_center_charge_online)
+    View chargeOnline;
+    @InjectView(R.id.user_center_my_charge_history)
+    View chargeHistory;
     @InjectView(R.id.user_center_done)
     View done;
     @InjectView(R.id.user_center_my_tracks)
@@ -101,6 +105,8 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
         waitingReceiving.setOnClickListener(this);
         done.setOnClickListener(this);
         myTracks.setOnClickListener(this);
+        chargeHistory.setOnClickListener(this);
+        chargeOnline.setOnClickListener(this);
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
@@ -177,7 +183,7 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_center_points_shopping_mall:
-                CommonWebViewActivity.startCommonWeb(getActivity(),"积分商城", CommonData.POINT_SHOPPING_MALL_URL);
+                CommonWebViewActivity.startCommonWeb(getActivity(),"我的代金券", CommonData.MY_VOUCHER);
                 break;
             case R.id.user_center_interactive_area:
                 CommonWebViewActivity.startCommonWeb(getActivity(),"互动社区", CommonData.INTERACTIVE_AREA_URL);
@@ -202,6 +208,12 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.user_center_my_tracks:
                 CommonWebViewActivity.startCommonWeb(getActivity(),"我的足迹", CommonData.HISTORY);
+                break;
+            case R.id.user_center_my_charge_history:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"充值记录",CommonData.CHARGE_HISTORY);
+                break;
+            case R.id.user_center_charge_online:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"在线充值",CommonData.CHARGE_ONLINE);
                 break;
             case R.id.user_center_config:
                 Intent intent = new Intent(getActivity(), SettingActivity.class);

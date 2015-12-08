@@ -1,11 +1,13 @@
 package com.cjq.aijia.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -13,7 +15,10 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.cjq.aijia.R;
+import com.cjq.aijia.entity.EventJumpIndex;
+import com.cjq.aijia.util.LoginInterface;
 import com.cjq.aijia.util.SaveTool;
+import com.ypy.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,6 +38,7 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
     public static final String EXTRA_TITLE = "title";
     private String url;
 
+    @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,14 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        web.addJavascriptInterface(new LoginInterface() {
+            @Override
+            public void login_request() {
+                SaveTool.clear(CommonWebViewActivity.this);
+                EventBus.getDefault().post(new EventJumpIndex().setNum(3));
+                finish();
+            }
+        },"app");
         web.setWebChromeClient(new WebChromeClient() {
 
         });

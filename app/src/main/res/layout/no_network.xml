@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/no_net_refresh"
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_color">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ScrollView
+
+    <ImageView
+        android:background="@color/pure_white"
+        android:src="@mipmap/xiaomifeng"
+        android:scaleType="centerInside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/no_net_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="9999dp">
 
-                android:gravity="center"
-                android:text="并没有网络"
-                android:textColor="@color/pure_white" />
-        </LinearLayout>
-    </ScrollView>
-</android.support.v4.widget.SwipeRefreshLayout>
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="300dp"-->
+
+                    <!--android:gravity="center"-->
+                    <!--android:text="并没有网络"-->
+                    <!--android:textColor="@color/pure_white" />-->
+            </LinearLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>
+

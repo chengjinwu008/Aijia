@@ -93,15 +93,17 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
         }
 
         if(buttonOn!=No){
-            BottomButton bx = changeColor(No);
+            BottomButton bx = buttons.get(No);
+//            changeColor(No);
             if(checkedListener!=null)
             checkedListener.onButtonCheckedChanged(No);
             if(bx.getCheckedInterface()!=null)
             bx.getCheckedInterface().onChecked();
         }
     }
+
     @NonNull
-    public BottomButton changeColor(int no) {
+    public void changeColor(int no) {
         BottomButton bx = buttons.get(no);
         if(no!=buttonOn){
             ImageView v = (ImageView) getChildAt(no);
@@ -114,6 +116,5 @@ public class BottomBar extends LinearLayout implements View.OnClickListener {
             v.setImageResource(bx.getImageOnId());
             v.setBackgroundResource(bx.getBackgroundOn());
         }
-        return bx;
     }
 }

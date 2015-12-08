@@ -14,7 +14,10 @@ import com.cjq.aijia.entity.BottomButton;
 import com.cjq.aijia.entity.EventJumpIndex;
 import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.EventMainRefresh;
+import com.cjq.aijia.entity.EventNoNetChange;
 import com.cjq.aijia.entity.EventWebChange;
+import com.cjq.aijia.entity.EventWebRefresh;
+import com.cjq.aijia.entity.EventWebViewBackgroundRefresh;
 import com.cjq.aijia.fragments.LoginFragment;
 import com.cjq.aijia.fragments.NoNetworkFragment;
 import com.cjq.aijia.fragments.UserCenterFragment;
@@ -45,6 +48,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     private FragmentManager manager;
     private NetworkReceiver receiver;
+    private String now_no_key = "web";
+    private int now_no=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
             startService(intent);
             //注册网络监控监听
             IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-            registerReceiver(receiver,filter);
+            registerReceiver(receiver, filter);
         }
 
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));
@@ -84,11 +89,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         fragments.put("login", LoginFragment.getInstance());
         fragments.put("no_net", NoNetworkFragment.getInstance());
 
-        if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
-            dealWebView(0);
-        } else {
-            changeFragment("no_net");
-        }
+        changeFragment("web");
+        bottomBar.changeColor(0);
     }
 
     @Override
@@ -98,6 +100,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     @Override
     public void onButtonCheckedChanged(int No) {
+        now_no=No;
         //处理不同的点击
         switch (No) {
             case 3:
@@ -113,18 +116,21 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
                 } else {
                     changeFragment("no_net");
                 }
+                bottomBar.changeColor(No);
                 break;
             default:
                 if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
                     dealWebView(No);
                 } else {
                     changeFragment("no_net");
+                    bottomBar.changeColor(now_no);
                 }
                 break;
         }
     }
 
     private void changeFragment(String key) {
+        now_no_key = key;
         FragmentTransaction transaction = manager.beginTransaction();
         if (!fragments.get(key).isAdded()) {
             transaction.add(R.id.main_content, fragments.get(key));
@@ -146,18 +152,26 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     //对webview分类处理
     private void dealWebView(int no) {
-        if(no==2)
+        if (no == 2)
             try {
                 SaveTool.getUserId(this);
-                changeFragment("web");
-                EventBus.getDefault().post(new EventWebChange(no));
+                if ("web".equals(now_no_key)) {
+                    changeFragment("web");
+                    bottomBar.changeColor(no);
+                    EventBus.getDefault().post(new EventWebChange(no));
+                } else
+                    EventBus.getDefault().post(new EventWebViewBackgroundRefresh(no));
             } catch (Exception e) {
                 bottomBar.changeColor(3);
                 changeFragment("login");
             }
-        else{
-            changeFragment("web");
-            EventBus.getDefault().post(new EventWebChange(no));
+        else {
+            if ("web".equals(now_no_key)) {
+                changeFragment("web");
+                bottomBar.changeColor(no);
+                EventBus.getDefault().post(new EventWebChange(no));
+            } else
+                EventBus.getDefault().post(new EventWebViewBackgroundRefresh(no));
         }
     }
 
@@ -178,7 +192,10 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     public void onEventMainThread(EventMainRefresh e) {
-        onButtonCheckedChanged(bottomBar.getButtonActivated());
+        if (bottomBar.getButtonActivated() == 3)
+            onButtonCheckedChanged(bottomBar.getButtonActivated());
+        else
+            EventBus.getDefault().post(new EventWebViewBackgroundRefresh(bottomBar.getButtonActivated()));
     }
 
     public void onEventMainThread(EventJumpIndex e) {
@@ -186,9 +203,21 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         bottomBar.changeColor(e.getNum());
     }
 
-    public void onEventMainThread(EventLogin e){
-        if(bottomBar.getButtonActivated()==3){
+    public void onEventMainThread(EventNoNetChange e) {
+        if(now_no!=3){
+            changeFragment("no_net");
+            bottomBar.changeColor(now_no);
+        }
+    }
+
+    public void onEventMainThread(EventLogin e) {
+        if (bottomBar.getButtonActivated() == 3) {
             onButtonCheckedChanged(bottomBar.getButtonActivated());
         }
+    }
+
+    public void onEventMainThread(EventWebRefresh e) {
+        changeFragment("web");
+        bottomBar.changeColor(now_no);
     }
 }

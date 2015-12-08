@@ -57,8 +57,8 @@ public class SettingActivity extends AppCompatActivity implements SettingAdapter
 
         List<SettingItem> menuItems = new ArrayList<>();
         menuItems.add(new SettingItem("地址管理","",true));
-        menuItems.add(new SettingItem("绑定会员卡","",true));
-        menuItems.add(new SettingItem("优惠券","",true));
+        menuItems.add(new SettingItem("会员卡","",true));
+//        menuItems.add(new SettingItem("优惠券","",true));
         menuItems.add(new SettingItem("修改密码","",true));
         menuItems.add(new SettingItem("当前版本",versionName));
         menuItems.add(new SettingItem(SettingItem.TYPE.BUTTON,"退出登录"));
@@ -95,14 +95,9 @@ public class SettingActivity extends AppCompatActivity implements SettingAdapter
                 CommonWebViewActivity.startCommonWeb(this,"收货地址", CommonData.ADDRESS_LIST_URL);
                 break;
             case 1:
-                // TODO: 2015/12/2 绑定会员卡
-
+                CommonWebViewActivity.startCommonWeb(this,"会员卡", CommonData.MEMBER_CARD);
                 break;
             case 2:
-                // TODO: 2015/12/2 优惠券
-
-                break;
-            case 3:
                 String mobileNumber = getIntent().getStringExtra("mobile");
                 if(mobileNumber!=null && !"".equals(mobileNumber)){
                     Intent intent = new Intent(this,FindPasswordActivity.class);
