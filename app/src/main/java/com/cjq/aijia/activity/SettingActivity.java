@@ -78,7 +78,7 @@ public class SettingActivity extends AppCompatActivity implements SettingAdapter
     @Override
     public void onItemClicked(int position, Object entity, View childView) {
         switch (position){
-            case 5:
+            case 4:
                 try {
                     WebUtil.requestLogout(this, new Runnable() {
                         @Override

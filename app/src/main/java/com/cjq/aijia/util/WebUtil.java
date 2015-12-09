@@ -484,11 +484,11 @@ public class WebUtil {
         });
     }
 
-    private static void operationOnFailure(Context context,String msg){
+    private final static void operationOnFailure(Context context,String msg){
         ToastUtil.showToast(context,msg);
     }
 
-    private static void operationOnRetry(Context context,int no){
+    private final static void operationOnRetry(Context context,int no){
         ToastUtil.showToast(context,"网络不顺畅，第"+no+"次重新请求");
     }
 }

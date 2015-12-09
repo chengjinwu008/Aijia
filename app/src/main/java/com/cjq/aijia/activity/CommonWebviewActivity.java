@@ -83,7 +83,7 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
         close.setOnClickListener(this);
     }
 
-    private void dealURL(String urlS) {
+    private final void dealURL(String urlS) {
         try {
             if(urlS.contains("?")){
                 if(!urlS.contains("key")){
@@ -115,7 +115,7 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
         web.loadUrl(url);
     }
 
-    public static void startCommonWeb(Context context, String title, String url) {
+    public final static void startCommonWeb(Context context, String title, String url) {
         Intent intent = new Intent(context, CommonWebViewActivity.class);
         intent.putExtra(CommonWebViewActivity.EXTRA_TITLE, title);
         intent.putExtra(CommonWebViewActivity.EXTRA_URL, url);

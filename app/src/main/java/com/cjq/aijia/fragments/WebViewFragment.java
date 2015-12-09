@@ -168,7 +168,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         webView.loadUrl(url);
     }
 
-    private void dealURL(String urlS) {
+    private final void dealURL(String urlS) {
         try {
             if (urlS.contains("?")) {
                 if (!urlS.contains("key")) {
