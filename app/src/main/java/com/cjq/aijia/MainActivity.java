@@ -27,6 +27,7 @@ import com.cjq.aijia.service.CheckService;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.WebUtil;
 import com.cjq.aijia.view.BottomBar;
+import com.marshalchen.common.commonUtils.urlUtils.HttpUtilsAsync;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ypy.eventbus.EventBus;
@@ -74,6 +75,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
             //注册网络监控监听
             IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
             registerReceiver(receiver, filter);
+
+            HttpUtilsAsync.setTimeout(3000);
         }
 
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));

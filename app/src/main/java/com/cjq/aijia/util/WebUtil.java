@@ -33,6 +33,7 @@ public class WebUtil {
      * @param dealAfterSuccess 异步处理执行体
      */
     public static void requestLogin(final Context context, String userName, String password, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在请求登录，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -42,8 +43,8 @@ public class WebUtil {
         paramObj.put("code", "0002");
         paramObj.put("data", dataObj);
         params.put("opjson", paramObj.toString());
-        HttpUtilsAsync.post(CommonData.LOGIN_URL, params, new AsyncHttpResponseHandler() {
 
+        HttpUtilsAsync.post(CommonData.LOGIN_URL, params, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
                 // 准备开始请求登录
@@ -74,11 +75,13 @@ public class WebUtil {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 // 请求登录服务器错误
+                operationOnFailure(context,"登录失败，请检查你的网络");
             }
 
             @Override
             public void onRetry(int retryNo) {
                 // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -92,6 +95,7 @@ public class WebUtil {
      * @throws JSONException
      */
     public static void requestShotMsg(final Context context, String s, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在请求发送短信验证码，请稍候");
         if (!checkMobile(s)) {
             ToastUtil.showToast(context, "请输入正确的手机号");
         } else {
@@ -103,7 +107,6 @@ public class WebUtil {
             paramObj.put("code", "0001");
             paramObj.put("data", dataObj);
             params.put("opjson", paramObj.toString());
-
             HttpUtilsAsync.post(CommonData.SHORT_MSG_URL, params, new AsyncHttpResponseHandler() {
 
                 @Override
@@ -134,11 +137,13 @@ public class WebUtil {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                     // 请求登录服务器错误
+                    operationOnFailure(context,"发送短信验证码失败，请检查你的网络");
                 }
 
                 @Override
                 public void onRetry(int retryNo) {
                     // 重试请求登录
+                    operationOnRetry(context,retryNo);
                 }
             });
         }
@@ -175,6 +180,7 @@ public class WebUtil {
      * @throws JSONException
      */
     public static void checkInfo(final Context context, String userName, String mobile, String verify, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在请求注册，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -206,7 +212,13 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
 
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -223,6 +235,7 @@ public class WebUtil {
      * @throws JSONException
      */
     public static void requestRegister(final Context context, String userName, String mobile, String verify, String password, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在请求注册，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -260,7 +273,13 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
 
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -274,6 +293,7 @@ public class WebUtil {
      * @throws JSONException
      */
     public static void findCheckMobile(final Context context,  String mobile, String verify, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在验证短信，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -304,7 +324,13 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
 
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -319,6 +345,7 @@ public class WebUtil {
      * @throws JSONException
      */
     public static void requestFindPassword(final Context context,  String mobile, String verify,String password, final Runnable dealAfterSuccess) throws JSONException {
+        ToastUtil.showToast(context,"正在请求更改密码，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -350,7 +377,13 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
 
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -362,6 +395,7 @@ public class WebUtil {
      * @throws Exception
      */
     public static void requestLogout(final Context context, final Runnable dealAfterSuccess) throws Exception {
+        ToastUtil.showToast(context,"正在请求登出，请稍候");
         RequestParams params = new RequestParams();
 
         JSONObject paramObj = new JSONObject();
@@ -394,7 +428,13 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                ToastUtil.showToast(context,"登出失败");
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
     }
@@ -433,8 +473,22 @@ public class WebUtil {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                ToastUtil.showToast(context,"请求失败");
+                operationOnFailure(context,"请求失败，错误码"+statusCode);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // 重试请求登录
+                operationOnRetry(context,retryNo);
             }
         });
+    }
+
+    private static void operationOnFailure(Context context,String msg){
+        ToastUtil.showToast(context,msg);
+    }
+
+    private static void operationOnRetry(Context context,int no){
+        ToastUtil.showToast(context,"网络不顺畅，第"+no+"次重新请求");
     }
 }
