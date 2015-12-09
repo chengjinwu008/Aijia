@@ -39,6 +39,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private static Fragment INSTANCE;
     private boolean loadBackground;
+    private String url_origin=null;
 
     public static Fragment getInstance() {
         if (INSTANCE == null)
@@ -137,15 +138,27 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void onEventMainThread(EventWebChange webChange) {
-        dealURL(webChange.getUrl());
-        webView.loadUrl(url);
+        if(!webChange.getUrl().equals(url_origin)){
+            url_origin = webChange.getUrl();
+            dealURL(webChange.getUrl());
+            webView.stopLoading();
+            webView.loadUrl(url);
+        }
     }
 
     public void onEventMainThread(EventWebViewBackgroundRefresh e) {
         if(!loadBackground){
+            url_origin = e.getUrl();
             dealURL(e.getUrl());
             loadBackground = true;
             webView.loadUrl(url);
+        }else{
+            if(!e.getUrl().equals(url_origin)){
+                url_origin = e.getUrl();
+                dealURL(e.getUrl());
+                webView.stopLoading();
+                webView.loadUrl(url);
+            }
         }
     }
 

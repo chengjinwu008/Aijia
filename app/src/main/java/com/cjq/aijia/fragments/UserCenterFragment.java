@@ -22,6 +22,7 @@ import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.UserInfoDealer;
 import com.cjq.aijia.util.WebUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ypy.eventbus.EventBus;
 
 import java.util.List;
@@ -171,6 +172,9 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     }
 
     private void dealUserInfo(User info) {
+        if(!ImageLoader.getInstance().isInited()){
+            ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getActivity()));
+        }
         ImageLoader.getInstance().displayImage(info.getProfile(), profile);
         userName.setText(info.getUserName());
         userPoints.setText("积分：" + info.getPoints() + "积分");
