@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.HttpAuthHandler;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -17,15 +18,17 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
+import com.cjq.aijia.activity.CommonWebViewActivity;
 import com.cjq.aijia.entity.EventJumpIndex;
 import com.cjq.aijia.entity.EventNoNetChange;
 import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
 import com.cjq.aijia.entity.EventWebViewBackgroundRefresh;
-import com.cjq.aijia.util.LoginInterface;
+import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.ypy.eventbus.EventBus;
 
@@ -51,6 +54,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     WebView webView;
     @InjectView(R.id.web_refresh)
     SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.fragment_web_title)
+    TextView title;
+
     String url = CommonData.INDEX_URL;
 
     @Override
@@ -73,9 +79,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         WebSettings webSettings = webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new LoginInterface() {
-            @Override
-            public void login_request() {
+        webView.addJavascriptInterface(new JsInterface() {
+            @JavascriptInterface
+            public void login_request(){
                 SaveTool.clear(getActivity());
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
             }
@@ -129,11 +135,19 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                      public void onPageStarted(WebView view, String url, Bitmap favicon) {
                                          super.onPageStarted(view, url, favicon);
                                      }
+
+                                     @Override
+                                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                         CommonWebViewActivity.startCommonWeb(getActivity(),"",url);
+                                         return true;
+                                     }
                                  }
         );
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
+
+        title.setText("爱家商城");
         return view;
     }
 
@@ -143,6 +157,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dealURL(webChange.getUrl());
             webView.stopLoading();
             webView.loadUrl(url);
+            title.setText(webChange.getName());
         }
     }
 
@@ -152,20 +167,23 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             dealURL(e.getUrl());
             loadBackground = true;
             webView.loadUrl(url);
+            title.setText(e.getName());
         }else{
             if(!e.getUrl().equals(url_origin)){
                 url_origin = e.getUrl();
                 dealURL(e.getUrl());
                 webView.stopLoading();
                 webView.loadUrl(url);
+                title.setText(e.getName());
             }
         }
     }
 
     @Override
-    public void onRefresh() {
-        dealURL(url);
-        webView.loadUrl(url);
+    public final void onRefresh() {
+//        dealURL(url);
+//        webView.loadUrl(url);
+        webView.reload();
     }
 
     private final void dealURL(String urlS) {

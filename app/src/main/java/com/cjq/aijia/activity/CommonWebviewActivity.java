@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.cjq.aijia.R;
 import com.cjq.aijia.entity.EventJumpIndex;
-import com.cjq.aijia.util.LoginInterface;
+import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.ypy.eventbus.EventBus;
 
@@ -37,6 +37,7 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "title";
     private String url;
+    private boolean flag;
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     @Override
@@ -47,14 +48,14 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = getIntent();
         String urlS = intent.getStringExtra(EXTRA_URL);
-        String titleText = intent.getStringExtra(EXTRA_TITLE);
-
+        final String titleText = intent.getStringExtra(EXTRA_TITLE);
+//        refreshLayout.setEnabled(true);
         dealURL(urlS);
 
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new LoginInterface() {
-            @Override
+        web.addJavascriptInterface(new JsInterface() {
+            @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(CommonWebViewActivity.this);
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
@@ -62,7 +63,13 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
             }
         },"app");
         web.setWebChromeClient(new WebChromeClient() {
-
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                if("".equals(titleText)){
+                    CommonWebViewActivity.this.title.setText(title);
+                }
+                super.onReceivedTitle(view, title);
+            }
         });
 
         web.setWebViewClient(new WebViewClient() {
@@ -71,6 +78,17 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
                 super.onPageFinished(view, url);
                 if (refreshLayout.isRefreshing())
                     refreshLayout.setRefreshing(false);
+//                if(flag){
+//                    refreshLayout.setVisibility(View.GONE);
+//                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+//                refreshLayout.setVisibility(View.VISIBLE);
+//                flag=false;
+                view.loadUrl("file:///android_asset/net_err_hint.html");
+                super.onReceivedError(view, errorCode, description, failingUrl);
             }
         });
 
@@ -110,9 +128,11 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void onRefresh() {
-        dealURL(url);
-        web.loadUrl(url);
+    public final void onRefresh() {
+//        dealURL(url);
+//        web.loadUrl(url);
+        web.reload();
+//        flag=true;
     }
 
     public final static void startCommonWeb(Context context, String title, String url) {

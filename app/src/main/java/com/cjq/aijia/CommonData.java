@@ -5,7 +5,7 @@ package com.cjq.aijia;
  */
 public class CommonData {
 
-    public static String MAIN_URL = "http://tx397574751.xicp.net";
+    public static String MAIN_URL = "http://ajgw.lanhai.dev";
 
     public static String INDEX_URL = MAIN_URL+"/app/";
     public static String CATEGORY_URL = MAIN_URL+"/app/tmpl/product_first_categroy.html";
