@@ -73,7 +73,8 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
     View done;
     @InjectView(R.id.user_center_my_tracks)
     View myTracks;
-
+    @InjectView(R.id.user_center_after_sell)
+    View afterSell;
 
     private String mobile;
     private boolean isFetching=false;
@@ -108,6 +109,7 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
         myTracks.setOnClickListener(this);
         chargeHistory.setOnClickListener(this);
         chargeOnline.setOnClickListener(this);
+        afterSell.setOnClickListener(this);
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
@@ -218,6 +220,9 @@ public class UserCenterFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.user_center_charge_online:
                 CommonWebViewActivity.startCommonWeb(getActivity(),"在线充值",CommonData.CHARGE_ONLINE);
+                break;
+            case R.id.user_center_after_sell:
+                CommonWebViewActivity.startCommonWeb(getActivity(),"我的售后",CommonData.AFTER_SELL);
                 break;
             case R.id.user_center_config:
                 Intent intent = new Intent(getActivity(), SettingActivity.class);

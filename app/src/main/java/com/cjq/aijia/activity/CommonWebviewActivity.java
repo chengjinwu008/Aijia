@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -140,5 +141,16 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
         intent.putExtra(CommonWebViewActivity.EXTRA_TITLE, title);
         intent.putExtra(CommonWebViewActivity.EXTRA_URL, url);
         context.startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(web.canGoBack()){
+                web.goBack();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
