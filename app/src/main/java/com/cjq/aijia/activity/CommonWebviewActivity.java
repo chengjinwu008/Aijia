@@ -67,11 +67,11 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
                 finish();
             }
-        },"app");
+        }, "app");
         web.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
-                if("".equals(titleText)){
+                if ("".equals(titleText)) {
                     CommonWebViewActivity.this.title.setText(title);
                 }
                 super.onReceivedTitle(view, title);
@@ -93,24 +93,28 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 //                refreshLayout.setVisibility(View.VISIBLE);
 //                flag=false;
+                view.stopLoading();
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
 
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                view.stopLoading();
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedHttpError(view, request, errorResponse);
             }
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                view.stopLoading();
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedSslError(view, handler, error);
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                view.stopLoading();
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedError(view, request, error);
             }
@@ -127,14 +131,14 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
     private final void dealURL(String urlS) {
         try {
-            if(urlS.contains("?")){
-                if(!urlS.contains("key")){
-                    url = urlS+"&key="+SaveTool.getKey(this);
-                }else{
-                    url= urlS.replaceFirst("key=\\w+&","key="+SaveTool.getKey(this)+"&");
+            if (urlS.contains("?")) {
+                if (!urlS.contains("key")) {
+                    url = urlS + "&key=" + SaveTool.getKey(this);
+                } else {
+                    url = urlS.replaceFirst("key=\\w+&", "key=" + SaveTool.getKey(this) + "&");
                 }
-            }else{
-                url = urlS+"?key="+SaveTool.getKey(this);
+            } else {
+                url = urlS + "?key=" + SaveTool.getKey(this);
             }
         } catch (Exception e) {
             url = urlS;
@@ -144,7 +148,7 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.common_close:
                 finish();
                 break;
@@ -168,8 +172,8 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            if(web.canGoBack()){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (web.canGoBack()) {
                 web.goBack();
                 return true;
             }

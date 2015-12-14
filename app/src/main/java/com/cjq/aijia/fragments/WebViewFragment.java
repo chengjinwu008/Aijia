@@ -24,10 +24,8 @@ import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
 import com.cjq.aijia.activity.CommonWebViewActivity;
 import com.cjq.aijia.entity.EventJumpIndex;
-import com.cjq.aijia.entity.EventNoNetChange;
 import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
-import com.cjq.aijia.entity.EventWebViewBackgroundRefresh;
 import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.ypy.eventbus.EventBus;
@@ -41,8 +39,7 @@ import butterknife.InjectView;
 public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static Fragment INSTANCE;
-    private boolean loadBackground;
-    private String url_origin=null;
+    private String url_origin = null;
 
     public static Fragment getInstance() {
         if (INSTANCE == null)
@@ -81,7 +78,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         webSettings.setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new JsInterface() {
             @JavascriptInterface
-            public void login_request(){
+            public void login_request() {
                 SaveTool.clear(getActivity());
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
             }
@@ -94,10 +91,8 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                      @Override
                                      public void onPageFinished(WebView view, String url) {
                                          super.onPageFinished(view, url);
-                                         if (refreshLayout.isRefreshing())
+                                         if (refreshLayout.isRefreshing()) {
                                              refreshLayout.setRefreshing(false);
-                                         if(loadBackground){
-                                             loadBackground =false;
                                              EventBus.getDefault().post(new EventWebRefresh());
                                          }
                                      }
@@ -105,40 +100,34 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                      @Override
                                      public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                                          super.onReceivedError(view, request, error);
-                                         EventBus.getDefault().post(new EventNoNetChange());
+                                         view.stopLoading();
+                                         view.loadUrl("file:///android_asset/net_err_hint.html");
                                      }
 
                                      @Override
                                      public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                                          super.onReceivedHttpError(view, request, errorResponse);
-                                         EventBus.getDefault().post(new EventNoNetChange());
+                                         view.stopLoading();
+                                         view.loadUrl("file:///android_asset/net_err_hint.html");
                                      }
 
                                      @Override
                                      public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                                         view.stopLoading();
+                                         view.loadUrl("file:///android_asset/net_err_hint.html");
                                          super.onReceivedHttpAuthRequest(view, handler, host, realm);
                                      }
 
                                      @Override
                                      public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                                          super.onReceivedError(view, errorCode, description, failingUrl);
-                                         if(!loadBackground)
-                                         EventBus.getDefault().post(new EventNoNetChange());
-                                         else{
-                                             loadBackground =false;
-                                             EventBus.getDefault().post(new EventNoNetChange());
-                                         }
-
-                                     }
-
-                                     @Override
-                                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                                         super.onPageStarted(view, url, favicon);
+                                         view.stopLoading();
+                                         view.loadUrl("file:///android_asset/net_err_hint.html");
                                      }
 
                                      @Override
                                      public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                         CommonWebViewActivity.startCommonWeb(getActivity(),"",url);
+                                         CommonWebViewActivity.startCommonWeb(getActivity(), "", url);
                                          return true;
                                      }
                                  }
@@ -152,30 +141,12 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void onEventMainThread(EventWebChange webChange) {
-        if(!webChange.getUrl().equals(url_origin)){
+        if (!webChange.getUrl().equals(url_origin)) {
             url_origin = webChange.getUrl();
             dealURL(webChange.getUrl());
             webView.stopLoading();
             webView.loadUrl(url);
             title.setText(webChange.getName());
-        }
-    }
-
-    public void onEventMainThread(EventWebViewBackgroundRefresh e) {
-        if(!loadBackground){
-            url_origin = e.getUrl();
-            dealURL(e.getUrl());
-            loadBackground = true;
-            webView.loadUrl(url);
-            title.setText(e.getName());
-        }else{
-            if(!e.getUrl().equals(url_origin)){
-                url_origin = e.getUrl();
-                dealURL(e.getUrl());
-                webView.stopLoading();
-                webView.loadUrl(url);
-                title.setText(e.getName());
-            }
         }
     }
 

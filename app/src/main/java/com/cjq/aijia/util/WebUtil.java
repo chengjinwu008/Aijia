@@ -489,6 +489,6 @@ public class WebUtil {
     }
 
     private final static void operationOnRetry(Context context,int no){
-        ToastUtil.showToast(context,"网络不顺畅，第"+no+"次重新请求");
+        ToastUtil.showToast(context,"网络不顺畅，请稍等");
     }
 }

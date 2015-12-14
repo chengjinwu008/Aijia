@@ -17,7 +17,6 @@ import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.entity.EventNoNetChange;
 import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
-import com.cjq.aijia.entity.EventWebViewBackgroundRefresh;
 import com.cjq.aijia.fragments.LoginFragment;
 import com.cjq.aijia.fragments.NoNetworkFragment;
 import com.cjq.aijia.fragments.UserCenterFragment;
@@ -51,7 +50,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     private FragmentManager manager;
     private NetworkReceiver receiver;
     private String now_no_key = "web";
-    private int now_no=0;
+    private int now_no = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +103,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     @Override
     public void onButtonCheckedChanged(int No) {
-        now_no=No;
+        now_no = No;
         //处理不同的点击
         switch (No) {
             case 3:
@@ -159,24 +158,18 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         if (no == 2)
             try {
                 SaveTool.getUserId(this);
-                if ("web".equals(now_no_key)) {
-                    changeFragment("web");
-                    bottomBar.changeColor(no);
-                    EventBus.getDefault().post(new EventWebChange(no));
-                } else
-                    EventBus.getDefault().post(new EventWebViewBackgroundRefresh(no));
-            } catch (Exception e) {
-                bottomBar.changeColor(3);
-                changeFragment("login");
-                ToastUtil.showToast(this,"登陆后才能查看购物车");
-            }
-        else {
-            if ("web".equals(now_no_key)) {
                 changeFragment("web");
                 bottomBar.changeColor(no);
                 EventBus.getDefault().post(new EventWebChange(no));
-            } else
-                EventBus.getDefault().post(new EventWebViewBackgroundRefresh(no));
+            } catch (Exception e) {
+                bottomBar.changeColor(3);
+                changeFragment("login");
+                ToastUtil.showToast(this, "登陆后才能查看购物车");
+            }
+        else {
+            changeFragment("web");
+            bottomBar.changeColor(no);
+            EventBus.getDefault().post(new EventWebChange(no));
         }
     }
 
@@ -197,10 +190,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     public void onEventMainThread(EventMainRefresh e) {
-        if (bottomBar.getButtonActivated() == 3)
-            onButtonCheckedChanged(bottomBar.getButtonActivated());
-        else
-            EventBus.getDefault().post(new EventWebViewBackgroundRefresh(bottomBar.getButtonActivated()));
+        onButtonCheckedChanged(bottomBar.getButtonActivated());
     }
 
     public void onEventMainThread(EventJumpIndex e) {
@@ -209,10 +199,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     public void onEventMainThread(EventNoNetChange e) {
-        if(now_no!=3){
-            changeFragment("no_net");
-            bottomBar.changeColor(now_no);
-        }
+        changeFragment("no_net");
+        bottomBar.changeColor(now_no);
     }
 
     public void onEventMainThread(EventLogin e) {
