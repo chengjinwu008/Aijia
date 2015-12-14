@@ -25,6 +25,7 @@ import com.cjq.aijia.fragments.WebViewFragment;
 import com.cjq.aijia.reveiver.NetworkReceiver;
 import com.cjq.aijia.service.CheckService;
 import com.cjq.aijia.util.SaveTool;
+import com.cjq.aijia.util.ToastUtil;
 import com.cjq.aijia.util.WebUtil;
 import com.cjq.aijia.view.BottomBar;
 import com.marshalchen.common.commonUtils.urlUtils.HttpUtilsAsync;
@@ -167,6 +168,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
             } catch (Exception e) {
                 bottomBar.changeColor(3);
                 changeFragment("login");
+                ToastUtil.showToast(this,"登陆后才能查看购物车");
             }
         else {
             if ("web".equals(now_no_key)) {

@@ -3,13 +3,18 @@ package com.cjq.aijia.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -90,6 +95,24 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 //                flag=false;
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedError(view, errorCode, description, failingUrl);
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                view.loadUrl("file:///android_asset/net_err_hint.html");
+                super.onReceivedHttpError(view, request, errorResponse);
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                view.loadUrl("file:///android_asset/net_err_hint.html");
+                super.onReceivedSslError(view, handler, error);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                view.loadUrl("file:///android_asset/net_err_hint.html");
+                super.onReceivedError(view, request, error);
             }
         });
 
