@@ -10,6 +10,13 @@ public class EventJumpIndex {
         return num;
     }
 
+    public EventJumpIndex(int num) {
+        this.num = num;
+    }
+
+    public EventJumpIndex() {
+    }
+
     public EventJumpIndex setNum(int num) {
         this.num = num;
         return this;

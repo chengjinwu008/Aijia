@@ -147,6 +147,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             webView.stopLoading();
             webView.loadUrl(url);
             title.setText(webChange.getName());
+        }else{
+            webView.stopLoading();
+            webView.reload();
         }
     }
 

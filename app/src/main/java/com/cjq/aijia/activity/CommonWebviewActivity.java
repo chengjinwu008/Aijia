@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.cjq.aijia.R;
 import com.cjq.aijia.entity.EventJumpIndex;
+import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.ypy.eventbus.EventBus;
@@ -69,14 +71,24 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
             }
         }, "app");
         web.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                if ("".equals(titleText)) {
-                    CommonWebViewActivity.this.title.setText(title);
-                }
-                super.onReceivedTitle(view, title);
-            }
-        });
+                                   @Override
+                                   public void onReceivedTitle(WebView view, String title) {
+                                       if ("".equals(titleText)) {
+                                           CommonWebViewActivity.this.title.setText(title);
+                                       }
+                                       super.onReceivedTitle(view, title);
+                                   }
+
+                                   @Override
+                                   public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+
+                                       System.out.println(consoleMessage.message());
+
+                                       return super.onConsoleMessage(consoleMessage);
+                                   }
+                               }
+
+        );
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -87,6 +99,20 @@ public class CommonWebViewActivity extends AppCompatActivity implements View.OnC
 //                if(flag){
 //                    refreshLayout.setVisibility(View.GONE);
 //                }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if(url.contains("cart_list")){
+                    EventBus.getDefault().post(new EventJumpIndex(2));
+                    finish();
+                }
+
+                if(!url.contains("key")){
+                    dealURL(url);
+                    view.loadUrl(CommonWebViewActivity.this.url);
+                }
+                return super.shouldOverrideUrlLoading(view, url);
             }
 
             @Override

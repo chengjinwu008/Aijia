@@ -19,7 +19,7 @@ public class CommonData {
     public static String ORDER_WAITING_SENDING = MAIN_URL+"/app/tmpl/member/order_list.html?otype=3 ";
     public static String ORDER_WAITING_RECEIVING = MAIN_URL+"/app/tmpl/member/order_list.html?otype=4 ";
     public static String ORDER_DONE = MAIN_URL+"/app/tmpl/member/order_list.html?otype=5";
-    public static String HISTORY = MAIN_URL+"/app/tmpl/member/Views_list.html";
+    public static String HISTORY = MAIN_URL+"/app/tmpl/member/views_list.html";
     public static final String CHARGE_HISTORY =MAIN_URL + "/app/tmpl/member/rechargecard_record.html";
     public static final String MEMBER_CARD = MAIN_URL+"/app/tmpl/member/bind_card.html";
     public static final String MY_VOUCHER =MAIN_URL+"/app/tmpl/member/voucher_list.html" ;
