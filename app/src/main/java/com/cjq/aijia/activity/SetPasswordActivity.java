@@ -8,17 +8,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.cjq.aijia.BaseActivity;
 import com.cjq.aijia.R;
+import com.cjq.aijia.entity.EventJumpIndex;
+import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.ToastUtil;
 import com.cjq.aijia.util.Validator;
 import com.cjq.aijia.util.WebUtil;
+import com.ypy.eventbus.EventBus;
 
 import org.json.JSONException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener{
+public class SetPasswordActivity extends BaseActivity implements View.OnClickListener{
 
     public final static String FLAG_REGISTER = "register";
     public final static String FLAG_RESET = "reset";
@@ -152,7 +156,9 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
                             WebUtil.requestFindPassword(this, mobile, verify, passwordNew.getText().toString(), new Runnable() {
                                 @Override
                                 public void run() {
+                                    SaveTool.clear(SetPasswordActivity.this);
                                     ToastUtil.showToast(SetPasswordActivity.this,"密码已经更改成功");
+                                    EventBus.getDefault().post(new EventJumpIndex(3));
                                     finish();
                                 }
                             });

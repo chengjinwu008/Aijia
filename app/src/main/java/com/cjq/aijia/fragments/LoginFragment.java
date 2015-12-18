@@ -89,7 +89,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String password = passwordText.getText().toString();
 
         try {
-            WebUtil.requestLogin(getActivity(),userName, password, null);
+            WebUtil.requestLogin(getActivity(), userName, password, new Runnable() {
+                @Override
+                public void run() {
+                    passwordText.setText("");
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }

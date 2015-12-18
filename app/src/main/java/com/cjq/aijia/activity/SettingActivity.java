@@ -11,10 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.cjq.aijia.BaseActivity;
 import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
 import com.cjq.aijia.adapter.SettingAdapter;
 import com.cjq.aijia.entity.EventJumpIndex;
+import com.cjq.aijia.entity.EventShutDown;
 import com.cjq.aijia.entity.SettingItem;
 import com.cjq.aijia.util.WebUtil;
 import com.ypy.eventbus.EventBus;
@@ -26,7 +28,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SettingActivity extends AppCompatActivity implements SettingAdapter.ItemClickedInterface, View.OnClickListener {
+public class SettingActivity extends BaseActivity implements SettingAdapter.ItemClickedInterface, View.OnClickListener {
 
     @InjectView(R.id.setting_recycler)
     RecyclerView recyclerView;
@@ -114,6 +116,12 @@ public class SettingActivity extends AppCompatActivity implements SettingAdapter
             case R.id.setting_close:
                 finish();
                 break;
+        }
+    }
+
+    public void onEventMainThread(EventJumpIndex ev) {
+        if(ev.getNum()==3){
+            finish();
         }
     }
 }

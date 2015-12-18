@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cjq.aijia.BaseActivity;
 import com.cjq.aijia.R;
 import com.cjq.aijia.util.FlashAnimationUtil;
 import com.cjq.aijia.util.TimerRunnable;
@@ -20,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class FindPasswordActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class FindPasswordActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     @InjectView(R.id.find_password_request_verify)
     TextView requestVerify;

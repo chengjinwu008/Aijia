@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cjq.aijia.BaseActivity;
 import com.cjq.aijia.R;
 import com.cjq.aijia.util.FlashAnimationUtil;
 import com.cjq.aijia.util.TimerRunnable;
@@ -24,7 +25,7 @@ import org.json.JSONException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class RegisterActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     @InjectView(R.id.register_ag)
     CheckBox registerAg;

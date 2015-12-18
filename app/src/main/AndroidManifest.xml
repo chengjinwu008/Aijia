@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
@@ -18,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,12 +46,12 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.cjq.aijia.domain" />
 
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.LogoActivity" />
-        <activity android:name=".activity.SetPasswordActivity" />
-        <activity android:name=".activity.FindPasswordActivity" />
-        <activity android:name=".activity.CommonWebViewActivity" />
-        <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.RegisterActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.LogoActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SetPasswordActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.FindPasswordActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CommonWebViewActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SettingActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

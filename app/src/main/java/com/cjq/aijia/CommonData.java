@@ -24,7 +24,7 @@ public class CommonData {
     public static final String MEMBER_CARD = MAIN_URL+"/app/tmpl/member/bind_card.html";
     public static final String MY_VOUCHER =MAIN_URL+"/app/tmpl/member/voucher_list.html" ;
     public static final String CHARGE_ONLINE = MAIN_URL+"/app/tmpl/member/rechargecard_add_step1.html";
-    public static final String AFTER_SELL = "/app/tmpl/member/return_check.html";
+    public static final String AFTER_SELL =MAIN_URL+"/app/tmpl/member/return_check.html";
 
     public static String LOGIN_URL = MAIN_URL+"/service/app.php";
     public static String SHORT_MSG_URL = MAIN_URL+"/service/app.php";

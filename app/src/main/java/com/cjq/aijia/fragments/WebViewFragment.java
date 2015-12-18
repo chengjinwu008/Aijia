@@ -1,8 +1,16 @@
 package com.cjq.aijia.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.HttpAuthHandler;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -28,7 +37,11 @@ import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
 import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
+import com.cjq.aijia.util.ToastUtil;
 import com.ypy.eventbus.EventBus;
+
+import java.io.File;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,6 +53,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private static Fragment INSTANCE;
     private String url_origin = null;
+    private ValueCallback<Uri[]> mFilePathCallback;
+    private Uri mUri;
+    private ValueCallback<Uri> mUploadMsg;
 
     public static Fragment getInstance() {
         if (INSTANCE == null)
@@ -60,6 +76,49 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
+    }
+
+    private void upload1(ValueCallback<Uri[]> filePathCallback) {
+        mFilePathCallback = filePathCallback;
+        getPic();
+    }
+
+    private void getPic() {
+        new AlertDialog.Builder(getActivity()).setItems(new String[]{"拍照", "从相册选择"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                            Intent test = new Intent("android.media.action.IMAGE_CAPTURE");
+
+                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getActivity().getPackageName() + "/", new Date().getTime() + ".png");
+
+                            mUri = Uri.fromFile(file);
+
+                            if (!file.getParentFile().exists()) {
+                                file.getParentFile().mkdirs();
+                            }
+                            Uri fileUri = Uri.fromFile(file);
+                            test.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                            startActivityForResult(test, 0);
+                        } else {
+                            ToastUtil.showToast(getActivity(), "没有SD卡");
+                        }
+                        break;
+                    case 1:
+                        Intent intent = new Intent(Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(intent, 1);
+                        break;
+                }
+            }
+        }).show();
+    }
+
+    private void upload(ValueCallback<Uri> filePathCallback) {
+        mUploadMsg = filePathCallback;
+        getPic();
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
@@ -85,6 +144,15 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }, "app");
         webView.setWebChromeClient(new WebChromeClient() {
 
+
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+                upload(uploadMsg);
+            }
+
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                upload1(filePathCallback);
+                return true;
+            }
         });
 
         webView.setWebViewClient(new WebViewClient() {
@@ -142,15 +210,65 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     public void onEventMainThread(EventWebChange webChange) {
         if (!webChange.getUrl().equals(url_origin)) {
+//            if(CommonData.INDEX_URL.equals(webChange.getUrl())){
+//
+//            }else{
+//
+//            }
+            title.setText(webChange.getName());
             url_origin = webChange.getUrl();
             dealURL(webChange.getUrl());
             webView.stopLoading();
             webView.loadUrl(url);
-            title.setText(webChange.getName());
         }else{
             webView.stopLoading();
             webView.reload();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri uri = data.getData();
+                    if (mFilePathCallback != null)
+                        mFilePathCallback.onReceiveValue(new Uri[]{uri});
+                    if(mUploadMsg!=null)
+                        mUploadMsg.onReceiveValue(uri);
+                    mFilePathCallback = null;
+                    mUploadMsg=null;
+                } else {
+                    if (mFilePathCallback != null)
+                        mFilePathCallback.onReceiveValue(new Uri[]{});
+                    if(mUploadMsg!=null)
+                        mUploadMsg.onReceiveValue(null);
+                    mFilePathCallback = null;
+                    mUploadMsg=null;
+                }
+                break;
+
+            case 0:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (mFilePathCallback != null)
+                        mFilePathCallback.onReceiveValue(new Uri[]{mUri});
+                    if(mUploadMsg!=null)
+                        mUploadMsg.onReceiveValue(mUri);
+                    mFilePathCallback = null;
+                    mUri = null;
+                    mUploadMsg=null;
+                } else {
+                    if (mFilePathCallback != null)
+                        mFilePathCallback.onReceiveValue(new Uri[]{});
+                    if(mUploadMsg!=null)
+                        mUploadMsg.onReceiveValue(null);
+                    mFilePathCallback = null;
+                    mUploadMsg=null;
+                }
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
