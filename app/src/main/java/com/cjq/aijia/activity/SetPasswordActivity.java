@@ -158,7 +158,7 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
                                 public void run() {
                                     SaveTool.clear(SetPasswordActivity.this);
                                     ToastUtil.showToast(SetPasswordActivity.this,"密码已经更改成功");
-                                    EventBus.getDefault().post(new EventJumpIndex(3));
+                                    EventBus.getDefault().post(new EventJumpIndex(4));
                                     finish();
                                 }
                             });

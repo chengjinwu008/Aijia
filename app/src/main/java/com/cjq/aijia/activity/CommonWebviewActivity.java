@@ -83,7 +83,7 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
             @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(CommonWebViewActivity.this);
-                EventBus.getDefault().post(new EventJumpIndex().setNum(3));
+                EventBus.getDefault().post(new EventJumpIndex().setNum(4));
                 finish();
             }
         }, "app");
@@ -160,7 +160,7 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains("cart_list")) {
-                    EventBus.getDefault().post(new EventJumpIndex(2));
+                    EventBus.getDefault().post(new EventJumpIndex(3));
                     finish();
                 }
 

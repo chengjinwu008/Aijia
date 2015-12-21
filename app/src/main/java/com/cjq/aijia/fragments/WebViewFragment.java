@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cjq.aijia.CommonData;
@@ -49,7 +51,7 @@ import butterknife.InjectView;
 /**
  * Created by CJQ on 2015/11/12.
  */
-public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, TextView.OnEditorActionListener, View.OnClickListener {
 
     private static Fragment INSTANCE;
     private String url_origin = null;
@@ -69,6 +71,12 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.fragment_web_title)
     TextView title;
+    @InjectView(R.id.fragment_web_logo)
+    View logo;
+    @InjectView(R.id.fragment_web_search)
+    View search;
+    @InjectView(R.id.fragment_web_search_text)
+    EditText searchText;
 
     String url = CommonData.INDEX_URL;
 
@@ -139,7 +147,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(getActivity());
-                EventBus.getDefault().post(new EventJumpIndex().setNum(3));
+                EventBus.getDefault().post(new EventJumpIndex().setNum(4));
             }
         }, "app");
         webView.setWebChromeClient(new WebChromeClient() {
@@ -205,22 +213,36 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         refreshLayout.setOnRefreshListener(this);
 
         title.setText("爱家商城");
+
+        searchText.setOnEditorActionListener(this);
+        search.setOnClickListener(this);
+
         return view;
     }
 
     public void onEventMainThread(EventWebChange webChange) {
         if (!webChange.getUrl().equals(url_origin)) {
-//            if(CommonData.INDEX_URL.equals(webChange.getUrl())){
-//
-//            }else{
-//
-//            }
-            title.setText(webChange.getName());
-            url_origin = webChange.getUrl();
-            dealURL(webChange.getUrl());
-            webView.stopLoading();
-            webView.loadUrl(url);
-        }else{
+            if (CommonData.INDEX_URL.equals(webChange.getUrl())) {
+                searchText.setVisibility(View.VISIBLE);
+                title.setVisibility(View.GONE);
+                search.setVisibility(View.VISIBLE);
+                logo.setVisibility(View.VISIBLE);
+                url_origin = webChange.getUrl();
+                dealURL(webChange.getUrl());
+                webView.stopLoading();
+                webView.loadUrl(url);
+            } else {
+                searchText.setVisibility(View.GONE);
+                title.setVisibility(View.VISIBLE);
+                search.setVisibility(View.GONE);
+                logo.setVisibility(View.GONE);
+                title.setText(webChange.getName());
+                url_origin = webChange.getUrl();
+                dealURL(webChange.getUrl());
+                webView.stopLoading();
+                webView.loadUrl(url);
+            }
+        } else {
             webView.stopLoading();
             webView.reload();
         }
@@ -234,17 +256,17 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     Uri uri = data.getData();
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{uri});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(uri);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 } else {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(null);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 }
                 break;
 
@@ -252,18 +274,18 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 if (resultCode == Activity.RESULT_OK) {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{mUri});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(mUri);
                     mFilePathCallback = null;
                     mUri = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 } else {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(null);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 }
                 break;
         }
@@ -292,6 +314,33 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         } catch (Exception e) {
             url = urlS;
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if(actionId==KeyEvent.KEYCODE_SEARCH && event.getAction()==KeyEvent.ACTION_UP){
+            doSearch();
+            return true;
+        }
+        return false;
+    }
+
+    private void doSearch() {
+        // TODO: 2015/12/21 执行搜索
+
+        String keyWord = searchText.getText().toString();
+
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.fragment_web_search:
+                doSearch();
+                break;
         }
     }
 }

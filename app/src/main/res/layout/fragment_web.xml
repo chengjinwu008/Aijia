@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_bar">
         <ImageView
+            android:paddingRight="10dp"
+            android:id="@+id/fragment_web_logo"
             android:paddingLeft="10dp"
             android:scaleType="centerInside"
             android:layout_width="wrap_content"
@@ -16,6 +18,7 @@
             android:layout_height="match_parent" />
 
         <TextView
+            android:visibility="gone"
             android:gravity="center"
             android:textColor="@color/pure_white"
             android:textSize="@dimen/nav_text_size"
@@ -24,10 +27,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <ImageView
+        <EditText
+            android:imeOptions="actionSearch"
+            android:id="@+id/fragment_web_search_text"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:hint="输入关键字进行搜索"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:imeActionLabel="搜索"
+            android:background="@color/pure_white"
+            android:layout_toLeftOf="@+id/fragment_web_search"
+            android:layout_toRightOf="@+id/fragment_web_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/fragment_web_search"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:src="@android:drawable/ic_menu_search"
+            android:text="搜索"
+            android:gravity="center"
+            android:textColor="@color/pure_white"
+            android:textSize="@dimen/nav_text_size"
             android:scaleType="centerInside"
             android:layout_width="50dp"
             android:layout_height="match_parent" />

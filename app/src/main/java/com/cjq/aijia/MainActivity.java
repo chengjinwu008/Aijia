@@ -81,6 +81,8 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
+        // TODO: 2015/12/21 更多功能按钮
+        bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.gouwuche_dianji, R.drawable.gouwuche_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.wode_dianji, R.drawable.wode_weidianji, R.color.pure_white, R.color.pure_white, null));
 
@@ -93,6 +95,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         fragments.put("no_net", NoNetworkFragment.getInstance());
 
         changeFragment("web");
+        EventBus.getDefault().post(new EventWebChange(0));
         bottomBar.changeColor(0);
     }
 
@@ -106,7 +109,11 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         now_no = No;
         //处理不同的点击
         switch (No) {
-            case 3:
+            case 2:
+                // TODO: 2015/12/21 更多按钮点击后效果
+
+                break;
+            case 4:
                 //跳转个人中心
                 if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
                     try {
@@ -155,7 +162,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     //对webview分类处理
     private void dealWebView(int no) {
-        if (no == 2)
+        if (no == 3)
             try {
                 SaveTool.getUserId(this);
                 changeFragment("web");
@@ -204,7 +211,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     public void onEventMainThread(EventLogin e) {
-        if (bottomBar.getButtonActivated() == 3) {
+        if (bottomBar.getButtonActivated() == 4) {
             onButtonCheckedChanged(bottomBar.getButtonActivated());
         }
     }
