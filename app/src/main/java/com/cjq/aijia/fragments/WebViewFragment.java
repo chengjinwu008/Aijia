@@ -226,6 +226,15 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         searchText.setOnEditorActionListener(this);
         search.setOnClickListener(this);
 
+        searchText.setVisibility(View.VISIBLE);
+        title.setVisibility(View.GONE);
+        search.setVisibility(View.VISIBLE);
+        logo.setVisibility(View.VISIBLE);
+        url_origin = CommonData.INDEX_URL;
+        dealURL(CommonData.INDEX_URL);
+        webView.stopLoading();
+        webView.loadUrl(url);
+
         return view;
     }
 

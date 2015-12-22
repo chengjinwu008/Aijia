@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         fragments.put("no_net", NoNetworkFragment.getInstance());
 
         changeFragment("web");
-        EventBus.getDefault().post(new EventWebChange(0));
+//        EventBus.getDefault().post(new EventWebChange(0));
         bottomBar.changeColor(0);
     }
 
@@ -226,7 +226,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     }
 
     public void onEventMainThread(EventLogin e) {
-        if (bottomBar.getButtonActivated() == 4) {
+        if (bottomBar.getButtonActivated() == 3) {
             onButtonCheckedChanged(bottomBar.getButtonActivated());
         }
     }

@@ -20,6 +20,7 @@
             android:id="@+id/common_back" />
 
         <TextView
+            android:ellipsize="middle"
             android:id="@+id/common_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
