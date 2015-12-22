@@ -1,14 +1,18 @@
 package com.cjq.aijia.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
@@ -268,6 +272,16 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
                         break;
                 }
             }
+        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (mFilePathCallback != null)
+                    mFilePathCallback.onReceiveValue(new Uri[]{});
+                if (mUploadMsg != null)
+                    mUploadMsg.onReceiveValue(null);
+                mFilePathCallback = null;
+                mUploadMsg = null;
+            }
         }).show();
     }
 
@@ -300,10 +314,20 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
             case 1:
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
+
+                    String[] proj = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = managedQuery(uri, proj, null, null, null);
+                    int column_index = cursor
+                            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    String path = cursor.getString(column_index);
+                    File file = new File(path);
+                    Uri uri_special = Uri.fromFile(file);
+
                     if (mFilePathCallback != null)
-                        mFilePathCallback.onReceiveValue(new Uri[]{uri});
+                        mFilePathCallback.onReceiveValue(new Uri[]{uri_special});
                     if (mUploadMsg != null)
-                        mUploadMsg.onReceiveValue(uri);
+                        mUploadMsg.onReceiveValue(uri_special);
                     mFilePathCallback = null;
                     mUploadMsg = null;
                 } else {
