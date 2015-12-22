@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
@@ -42,16 +46,21 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class CommonWebViewActivity extends BaseActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     @InjectView(R.id.common_title)
     TextView title;
     @InjectView(R.id.common_web)
     WebView web;
+    @InjectView(R.id.common_back)
+    View back;
     @InjectView(R.id.common_close)
     View close;
     @InjectView(R.id.common_refresh)
     SwipeRefreshLayout refreshLayout;
+
+//    @InjectView(R.id.activity_common_title_bar)
+//    Toolbar titleBar;
 
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "title";
@@ -60,6 +69,7 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
     private ValueCallback<Uri[]> mFilePathCallback;
     private Uri mUri;
     private ValueCallback<Uri> mUploadMsg;
+    private boolean titleFlag;
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     @Override
@@ -71,6 +81,7 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
         Intent intent = getIntent();
         String urlS = intent.getStringExtra(EXTRA_URL);
         final String titleText = intent.getStringExtra(EXTRA_TITLE);
+        titleFlag = "".equals(titleText);
 //        refreshLayout.setEnabled(true);
         dealURL(urlS);
 
@@ -83,19 +94,12 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
             @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(CommonWebViewActivity.this);
-                EventBus.getDefault().post(new EventJumpIndex().setNum(4));
+                EventBus.getDefault().post(new EventJumpIndex().setNum(3));
                 finish();
             }
         }, "app");
-        web.setWebChromeClient(new WebChromeClient() {
-                                   @Override
-                                   public void onReceivedTitle(WebView view, String title) {
-                                       if ("".equals(titleText)) {
-                                           CommonWebViewActivity.this.title.setText(title);
-                                       }
-                                       super.onReceivedTitle(view, title);
-                                   }
 
+        web.setWebChromeClient(new WebChromeClient() {
                                    @Override
                                    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
 
@@ -155,12 +159,13 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
 //                if(flag){
 //                    refreshLayout.setVisibility(View.GONE);
 //                }
+                CommonWebViewActivity.this.title.setText(view.getTitle());
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains("cart_list")) {
-                    EventBus.getDefault().post(new EventJumpIndex(3));
+                    EventBus.getDefault().post(new EventJumpIndex(2));
                     finish();
                 }
 
@@ -205,10 +210,27 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.theme_color), getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(this);
 
+//        titleBar.setTitle(titleText);
         title.setText(titleText);
 
         web.loadUrl(url);
+        back.setOnClickListener(this);
         close.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.common_web_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.common_web_close) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void upload1(ValueCallback<Uri[]> filePathCallback) {
@@ -280,17 +302,17 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
                     Uri uri = data.getData();
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{uri});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(uri);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 } else {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(null);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 }
                 break;
 
@@ -298,32 +320,23 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
                 if (resultCode == RESULT_OK) {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{mUri});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(mUri);
                     mFilePathCallback = null;
                     mUri = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 } else {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{});
-                    if(mUploadMsg!=null)
+                    if (mUploadMsg != null)
                         mUploadMsg.onReceiveValue(null);
                     mFilePathCallback = null;
-                    mUploadMsg=null;
+                    mUploadMsg = null;
                 }
                 break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.common_close:
-                finish();
-                break;
-        }
     }
 
     @Override
@@ -350,5 +363,21 @@ public class CommonWebViewActivity extends BaseActivity implements View.OnClickL
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.common_close:
+                finish();
+                break;
+            case R.id.common_back:
+                if (web.canGoBack()) {
+                    web.goBack();
+                } else {
+                    finish();
+                }
+                break;
+        }
     }
 }

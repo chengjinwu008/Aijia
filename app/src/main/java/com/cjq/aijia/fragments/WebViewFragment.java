@@ -3,10 +3,8 @@ package com.cjq.aijia.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -147,7 +145,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(getActivity());
-                EventBus.getDefault().post(new EventJumpIndex().setNum(4));
+                EventBus.getDefault().post(new EventJumpIndex().setNum(3));
             }
         }, "app");
         webView.setWebChromeClient(new WebChromeClient() {
@@ -319,7 +317,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if(actionId==KeyEvent.KEYCODE_SEARCH && event.getAction()==KeyEvent.ACTION_UP){
+        if (actionId == KeyEvent.KEYCODE_SEARCH && event.getAction() == KeyEvent.ACTION_DOWN) {
             doSearch();
             return true;
         }
@@ -327,17 +325,14 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void doSearch() {
-        // TODO: 2015/12/21 执行搜索
-
         String keyWord = searchText.getText().toString();
-
-
-
+        String url = CommonData.SEARCH_URL + "?keyword=" + android.text.TextUtils.htmlEncode(keyWord);
+        CommonWebViewActivity.startCommonWeb(getActivity(), "搜索结果", url);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.fragment_web_search:
                 doSearch();
                 break;

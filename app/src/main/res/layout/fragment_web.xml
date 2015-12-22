@@ -28,6 +28,7 @@
             android:layout_height="wrap_content" />
 
         <EditText
+            android:textColor="#000"
             android:imeOptions="actionSearch"
             android:id="@+id/fragment_web_search_text"
             android:layout_marginTop="3dp"

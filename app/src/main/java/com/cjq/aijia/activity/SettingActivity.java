@@ -120,7 +120,7 @@ public class SettingActivity extends BaseActivity implements SettingAdapter.Item
     }
 
     public void onEventMainThread(EventJumpIndex ev) {
-        if(ev.getNum()==4){
+        if(ev.getNum()==3){
             finish();
         }
     }

@@ -1,5 +1,7 @@
 package com.cjq.aijia;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -15,6 +17,7 @@ import com.cjq.aijia.entity.EventJumpIndex;
 import com.cjq.aijia.entity.EventLogin;
 import com.cjq.aijia.entity.EventMainRefresh;
 import com.cjq.aijia.entity.EventNoNetChange;
+import com.cjq.aijia.entity.EventShutDown;
 import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
 import com.cjq.aijia.fragments.LoginFragment;
@@ -82,7 +85,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         bottomBar.addButton(new BottomButton(R.drawable.shouye_dianji, R.drawable.shouye_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
         // TODO: 2015/12/21 更多功能按钮
-        bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
+//        bottomBar.addButton(new BottomButton(R.drawable.feilei_dianji, R.drawable.feilei_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.gouwuche_dianji, R.drawable.gouwuche_weidianji, R.color.pure_white, R.color.pure_white, null));
         bottomBar.addButton(new BottomButton(R.drawable.wode_dianji, R.drawable.wode_weidianji, R.color.pure_white, R.color.pure_white, null));
 
@@ -109,11 +112,11 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
         now_no = No;
         //处理不同的点击
         switch (No) {
-            case 2:
-                // TODO: 2015/12/21 更多按钮点击后效果
-
-                break;
-            case 4:
+//            case 2:
+//                // TODO: 2015/12/21 更多按钮点击后效果
+//
+//                break;
+            case 3:
                 //跳转个人中心
                 if (WebUtil.checkNetWork((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))) {
                     try {
@@ -171,7 +174,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
             } catch (Exception e) {
                 bottomBar.changeColor(3);
                 changeFragment("login");
-                ToastUtil.showToast(this, "登陆后才能查看购物车");
+                ToastUtil.showToast(this, "登录后才能查看购物车");
             }
         else {
             changeFragment("web");
@@ -183,7 +186,19 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+
+            new AlertDialog.Builder(this).setMessage("确认要退出吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    EventBus.getDefault().post(new EventShutDown());
+                }
+            }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
             return true;
         }
         return super.onKeyDown(keyCode, event);

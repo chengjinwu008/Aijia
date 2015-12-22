@@ -18,7 +18,7 @@ public class EventWebChange {
                 url= CommonData.CATEGORY_URL;
                 name = "分类导航";
                 break;
-            case 3:
+            case 2:
                 url= CommonData.CART_URL;
                 name = "购物车";
                 break;
