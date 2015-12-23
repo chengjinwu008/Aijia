@@ -333,9 +333,10 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             if (urlS.contains("?")) {
                 if (!urlS.contains("key")) {
                     url = urlS + "&key=" + SaveTool.getKey(getActivity());
-                } else {
-                    url = urlS.replaceFirst("key=\\w+&", "key=" + SaveTool.getKey(getActivity()) + "&");
                 }
+//                else {
+//                    url = urlS.replaceFirst("key=\\w+&", "key=" + SaveTool.getKey(getActivity()) + "&");
+//                }
             } else {
                 url = urlS + "?key=" + SaveTool.getKey(getActivity());
             }

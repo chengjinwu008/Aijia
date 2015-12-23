@@ -45,6 +45,8 @@ import com.cjq.aijia.util.ToastUtil;
 import com.ypy.eventbus.EventBus;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 import butterknife.ButterKnife;
@@ -168,13 +170,14 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
                 if (url.contains("cart_list")) {
                     EventBus.getDefault().post(new EventJumpIndex(2));
                     finish();
                 }
-
-                if (!url.contains("key")) {
+                if (!url.contains("alipay.com") && !url.contains("key")) {
                     dealURL(url);
+                    view.stopLoading();
                     view.loadUrl(CommonWebViewActivity.this.url);
                 }
                 return super.shouldOverrideUrlLoading(view, url);
@@ -292,6 +295,7 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
 
     private final void dealURL(String urlS) {
         try {
+
             if (urlS.contains("?")) {
                 if (!urlS.contains("key")) {
                     url = urlS + "&key=" + SaveTool.getKey(this);

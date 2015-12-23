@@ -165,7 +165,7 @@ public class MainActivity extends BaseActivity implements BottomBar.OnButtonChec
 
     //对webview分类处理
     private void dealWebView(int no) {
-        if (no == 3)
+        if (no == 2)
             try {
                 SaveTool.getUserId(this);
                 changeFragment("web");
