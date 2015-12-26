@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ConsoleMessage;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -37,8 +38,10 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.cjq.aijia.BaseActivity;
+import com.cjq.aijia.CommonData;
 import com.cjq.aijia.R;
 import com.cjq.aijia.entity.EventJumpIndex;
+import com.cjq.aijia.entity.EventWebReload;
 import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.ToastUtil;
@@ -76,6 +79,12 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
     private Uri mUri;
     private ValueCallback<Uri> mUploadMsg;
     private boolean titleFlag;
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().post(new EventWebReload());
+        super.onDestroy();
+    }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     @Override
@@ -148,6 +157,25 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
                                        upload(uploadMsg);
                                    }
 
+                                   public void openFileChooser(ValueCallback<Uri> uploadMsg,
+                                                               String acceptType) {
+                                       upload(uploadMsg);
+                                   }
+
+                                   public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+                                       upload(uploadMsg);
+                                   }
+
+                                   @Override
+                                   public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                                       super.onGeolocationPermissionsShowPrompt(origin, callback);
+                                   }
+
+                                   public boolean openFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                                       upload1(filePathCallback);
+                                       return true;
+                                   }
+
                                    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
                                        upload1(filePathCallback);
                                        return true;
@@ -170,6 +198,17 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                if(url.contains("/wap/tmpl/member/order_list.html")){
+                    dealURL(CommonData.ALL_ORDER_LIST);
+                    view.stopLoading();
+                    view.loadUrl(CommonWebViewActivity.this.url);
+                }
+
+                if (url.contains("/app/index.html")) {
+                    EventBus.getDefault().post(new EventJumpIndex(0));
+                    finish();
+                }
 
                 if (url.contains("cart_list")) {
                     EventBus.getDefault().post(new EventJumpIndex(2));

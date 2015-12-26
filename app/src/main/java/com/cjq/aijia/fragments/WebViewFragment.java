@@ -36,6 +36,7 @@ import com.cjq.aijia.activity.CommonWebViewActivity;
 import com.cjq.aijia.entity.EventJumpIndex;
 import com.cjq.aijia.entity.EventWebChange;
 import com.cjq.aijia.entity.EventWebRefresh;
+import com.cjq.aijia.entity.EventWebReload;
 import com.cjq.aijia.util.JsInterface;
 import com.cjq.aijia.util.SaveTool;
 import com.cjq.aijia.util.ToastUtil;
@@ -333,10 +334,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             if (urlS.contains("?")) {
                 if (!urlS.contains("key")) {
                     url = urlS + "&key=" + SaveTool.getKey(getActivity());
+                } else {
+                    url = urlS.replaceFirst("key=\\w+&", "key=" + SaveTool.getKey(getActivity()) + "&");
                 }
-//                else {
-//                    url = urlS.replaceFirst("key=\\w+&", "key=" + SaveTool.getKey(getActivity()) + "&");
-//                }
             } else {
                 url = urlS + "?key=" + SaveTool.getKey(getActivity());
             }
@@ -368,5 +368,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 doSearch();
                 break;
         }
+    }
+
+    public void onEventMainThread(EventWebReload e){
+        webView.reload();
     }
 }
