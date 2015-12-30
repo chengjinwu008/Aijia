@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -58,12 +59,15 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ValueCallback<Uri[]> mFilePathCallback;
     private Uri mUri;
     private ValueCallback<Uri> mUploadMsg;
+    private String url_temp;
 
     public static Fragment getInstance() {
         if (INSTANCE == null)
             INSTANCE = new WebViewFragment();
         return INSTANCE;
     }
+
+    private Handler handler = new Handler();
 
     @InjectView(R.id.main_web)
     WebView webView;
@@ -151,13 +155,27 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
         WebSettings webSettings = webView.getSettings();
-
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setSupportZoom(false);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.addJavascriptInterface(new JsInterface() {
             @JavascriptInterface
             public void login_request() {
                 SaveTool.clear(getActivity());
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
+            }
+
+            @JavascriptInterface
+            public void refresh(){
+                if(!refreshLayout.isRefreshing()){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshLayout.setRefreshing(true);
+                            onRefresh();
+                        }
+                    });
+                }
             }
         }, "app");
         webView.setWebChromeClient(new WebChromeClient() {
@@ -207,6 +225,9 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                      @Override
                                      public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                                          super.onReceivedError(view, errorCode, description, failingUrl);
+                                         if(!"file:///android_asset/net_err_hint.html".equals(failingUrl)){
+                                             url_temp = failingUrl;
+                                         }
                                          view.stopLoading();
                                          view.loadUrl("file:///android_asset/net_err_hint.html");
                                      }
@@ -326,6 +347,10 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public final void onRefresh() {
 //        dealURL(url);
 //        webView.loadUrl(url);
+        if(url_temp!=null){
+            webView.loadUrl(url_temp);
+            url_temp=null;
+        }else
         webView.reload();
     }
 

@@ -12,6 +12,8 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.PersistableBundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -79,6 +82,8 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
     private Uri mUri;
     private ValueCallback<Uri> mUploadMsg;
     private boolean titleFlag;
+    private Handler handler=new Handler();
+    private String url_temp;
 
     @Override
     protected void onDestroy() {
@@ -92,6 +97,8 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common_webview);
         ButterKnife.inject(this);
+//        if(savedInstanceState!=null)
+//        mUri= Uri.parse(savedInstanceState.getString("path"));
 
         Intent intent = getIntent();
         String urlS = intent.getStringExtra(EXTRA_URL);
@@ -102,6 +109,9 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
 
         WebSettings webSettings = web.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setSupportZoom(false);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
 //        webSettings.setAllowFileAccess(true);
 //        webSettings.setBuiltInZoomControls(true);
 
@@ -111,6 +121,19 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
                 SaveTool.clear(CommonWebViewActivity.this);
                 EventBus.getDefault().post(new EventJumpIndex().setNum(3));
                 finish();
+            }
+
+            @JavascriptInterface
+            public void refresh(){
+                if(!refreshLayout.isRefreshing()){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshLayout.setRefreshing(true);
+                            onRefresh();
+                        }
+                    });
+                }
             }
         }, "app");
 
@@ -226,6 +249,9 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 //                refreshLayout.setVisibility(View.VISIBLE);
 //                flag=false;
+                if(!"file:///android_asset/net_err_hint.html".equals(failingUrl)){
+                    url_temp = failingUrl;
+                }
                 view.stopLoading();
                 view.loadUrl("file:///android_asset/net_err_hint.html");
                 super.onReceivedError(view, errorCode, description, failingUrl);
@@ -247,8 +273,7 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                view.stopLoading();
-                view.loadUrl("file:///android_asset/net_err_hint.html");
+
                 super.onReceivedError(view, request, error);
             }
         });
@@ -384,6 +409,7 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
                 break;
 
             case 0:
+
                 if (resultCode == RESULT_OK) {
                     if (mFilePathCallback != null)
                         mFilePathCallback.onReceiveValue(new Uri[]{mUri});
@@ -410,6 +436,10 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
     public final void onRefresh() {
 //        dealURL(url);
 //        web.loadUrl(url);
+        if(url_temp!=null){
+            web.loadUrl(url_temp);
+            url_temp=null;
+        }else
         web.reload();
 //        flag=true;
     }
@@ -447,4 +477,12 @@ public class CommonWebViewActivity extends BaseActivity implements SwipeRefreshL
                 break;
         }
     }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//
+//        outState.putString("path",mUri.toString());
+//
+//        super.onSaveInstanceState(outState, outPersistentState);
+//    }
 }
