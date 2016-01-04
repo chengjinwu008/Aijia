@@ -163,7 +163,7 @@ public class WebUtil {
         NetworkInfo network = manager.getActiveNetworkInfo();
         if (network == null) {
             return false;
-        } else if (!network.isAvailable() || !network.isConnected() || network.isFailover()) {
+        } else if (!network.isAvailable() || !network.isConnected()) {
             return false;
         }
         return true;
